@@ -1,0 +1,4 @@
+[default]
+log_file: /var/log/gitserver.log
+repo_dir: /src
+database: /var/lib/gitserver/database
