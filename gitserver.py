@@ -94,7 +94,7 @@ for opt in CONFIG_OPTS:
 
 
 # setup logging
-logging.basicConfig(filename=CONFIG_OPTS['log_file', format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG)
+logging.basicConfig(filename=CONFIG_OPTS['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG)
 
 
 # parse command line arguments
