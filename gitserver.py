@@ -74,6 +74,9 @@ if not config.has_section('default'):
     sys.stderr.write("[default] section not found in any configuration file.\n")
     sys.exit(-1)
 
+log_file = config.get('default', 'log'):
+
+
 
 original_cmd = os.environ.get('SSH_ORIGINAL_COMMAND')
 
