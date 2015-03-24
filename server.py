@@ -10,6 +10,8 @@ import sqlite3
 import string
 import sys
 
+from GitServer import Repository
+
 
 # permissions
 # 1 read
@@ -128,7 +130,7 @@ if len(parsed_cmd) != 2:
     sys.exit(-1)
 
 command = parsed_cmd[0]
-repository = re.sub('\'', '', parsed_cmd[1])
+repo_name = re.sub('\'', '', parsed_cmd[1])
 
 if not command in COMMANDS:
     msg = 'Received invalid command "%s".' % original_cmd
@@ -136,4 +138,11 @@ if not command in COMMANDS:
     msg = '"%s" is not a valid command. Must be one of: %s\n' % (command, ', '.join(s for s in COMMANDS.keys()))
     sys.stderr.write(msg)
     sys.exit(-1)
+
+
+r = Repository(name = repo_name, directory = CONFIG_OPTS['repo_dir'])
+print r.exists()
+
+
+sys.exit(0)
 
