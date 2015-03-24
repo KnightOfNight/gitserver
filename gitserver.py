@@ -23,9 +23,9 @@ PERM_WRITE = 2
 # git-upload-archive
 # git-receive-pack
 COMMANDS = {
-    "git-upload-pack": PERM_READ,
-    "git-upload-archive": PERM_READ,
-    "git-receive-pack": PERM_WRITE,
+    "git-upload-pack" : PERM_READ,
+    "git-upload-archive" : PERM_READ,
+    "git-receive-pack" : PERM_WRITE,
 }
 
 
@@ -53,6 +53,12 @@ CONFIG_FILES = [
     os.path.expanduser('~/.gitserver.cfg'),
 ]
 
+CONFIG_OPTS = {
+    "log_file" : "",
+    "repo_dir" : "",
+    "database" : "",
+}
+
 
 # command line arguments
 # SSH key, --key
@@ -64,33 +70,43 @@ CONFIG_FILES = [
 # repository.readable(user)
 
 
+
+# parse the configuration file
 config = ConfigParser.ConfigParser()
 config_files = config.read(CONFIG_FILES)
 if not config_files:
-    sys.stderr.write("Configuration file not found. Must be one of: %s\n" % ", ".join(s for s in CONFIG_FILES))
+    sys.stderr.write("Configuration error: file not found. Must be one of: %s\n" % ", ".join(s for s in CONFIG_FILES))
     sys.exit(-1)
 
 if not config.has_section('default'):
-    sys.stderr.write("[default] section not found in any configuration file.\n")
+    sys.stderr.write("Configuration error: [default] section not found.\n")
     sys.exit(-1)
 
-log_file = config.get('default', 'log'):
+for opt in CONFIG_OPTS:
+    if not config.has_option('default', opt):
+        sys.stderr.write("Configuration error: [default] section missing %s.\n" % opt)
+        sys.exit(-1)
+
+    CONFIG_OPTS[opt] = config.get('default', opt)
+
+    if not CONFIG_OPTS[opt]:
+        sys.stderr.write("Configuration error: option %s is empty.\n" % opt)
+        sys.exit(-1)
 
 
 
+# parse the specified command
 original_cmd = os.environ.get('SSH_ORIGINAL_COMMAND')
 
 if original_cmd == None:
     sys.stderr.write("You have successfully authenticated, but this server does not provide shell access.\n")
     sys.exit(-1)
 
-
 parsed_cmd = string.split(original_cmd, ' ')
 
 if len(parsed_cmd) != 2:
     sys.stderr.write("You must pass a single command with exactly one argument.\n")
     sys.exit(-1)
-
 
 command = parsed_cmd[0]
 repository = re.sub('\'', '', parsed_cmd[1])
