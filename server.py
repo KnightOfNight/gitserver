@@ -11,6 +11,7 @@ import string
 import sys
 
 from GitServer import Repository
+from GitServer import Database
 
 
 # permissions
@@ -106,8 +107,7 @@ args = parser.parse_args()
 
 username = args.username
 
-
-logging.info('User "%s" connected to git server.' % username)
+logging.info('Username = "%s".' % username)
 
 
 # parse the specified command
@@ -132,16 +132,57 @@ if len(parsed_cmd) != 2:
 command = parsed_cmd[0]
 repo_name = re.sub('\'', '', parsed_cmd[1])
 
-if not command in COMMANDS:
-    msg = 'Received invalid command "%s".' % original_cmd
+if command in COMMANDS:
+    logging.info('Command = "%s".' % command)
+
+else:
+    msg = 'Received invalid command "%s". Must be one of: %s\n' % (command, ', '.join(s for s in COMMANDS.keys()))
     logging.critical(msg)
-    msg = '"%s" is not a valid command. Must be one of: %s\n' % (command, ', '.join(s for s in COMMANDS.keys()))
     sys.stderr.write(msg)
     sys.exit(-1)
 
 
+# check on the repository
 r = Repository(name = repo_name, directory = CONFIG_OPTS['repo_dir'])
-print r.exists()
+
+if r.exists():
+    logging.info('Repository = "%s".' % repo_name)
+
+else:
+    msg = 'Repository "%s" does not exist.' % repo_name
+    logging.critical(msg)
+    sys.stderr.write(msg)
+    sys.exit(-1)
+
+
+# setup the database connection
+d = Database(CONFIG_OPTS['database'])
+
+
+# check the command and the repo permissions
+if COMMANDS[command] == PERM_READ:
+    logging.info('Read access requested.')
+
+    if d.repo_readable(repository, user):
+        logging.info('Repository is readable to user "%s", executing requested command.' % username)
+
+    else:
+        msg = 'Repository is not readable to user "%s".' % username
+        logging.critical(msg)
+        sys.stderr.write(msg)
+        sys.exit(-1)
+
+elif COMMANDS[command] == PERM_WRITE:
+    logging.info('Write access requested.')
+
+    if d.repo_writable(repository, user):
+        logging.info('Repository is writable to user "%s", executing requested command.' % username)
+
+    else:
+        msg = 'Repository is not writable to user "%s".' % username
+        logging.critical(msg)
+        sys.stderr.write(msg)
+        sys.exit(-1)
 
 
 sys.exit(0)
