@@ -31,16 +31,11 @@ COMMANDS = {
 
 # schema
 # table users
-#   id
-#   user name
-#   user SSH key
-# table repositories
-#   id
 #   name
+#   key
 # table permissions
-#   id
-#   repository name
-#   user name
+#   repository_name
+#   user_name
 #   permission
 
 
@@ -58,10 +53,6 @@ CONFIG_OPTS = {
     'repo_dir' : '',
     'database' : '',
 }
-
-
-# command line arguments
-# SSH key, --key
 
 
 # parse the configuration file
