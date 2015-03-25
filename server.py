@@ -149,7 +149,7 @@ if d.permission(reponame, username) == perm_needed:
     os.system(cmd)
 
 else:
-    Log.info('User "%s" does not have the required permission.' % username)
+    Log.critical('User "%s" does not have the required permission.' % username)
     fatal_error('You do not have permission to access "%s".\n' % reponame)
 
 
