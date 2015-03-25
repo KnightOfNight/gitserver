@@ -68,12 +68,6 @@ CONFIG_OPTS = {
 # SSH key, --key
 
 
-# methods
-# repository.exists(name)
-# repository.writable(user)
-# repository.readable(user)
-
-
 # parse the configuration file
 config = ConfigParser.ConfigParser()
 config_files = config.read(CONFIG_FILES)
