@@ -9,7 +9,9 @@ import os
 import sqlite3
 import string
 import sys
+import time
 
+from Log import Log
 from GitServer import fatal_error
 from GitServer import Permissions
 from GitServer import Repository
@@ -82,7 +84,7 @@ for opt in CONFIG_OPTS:
 
 
 # setup logging
-logging.basicConfig(filename=CONFIG_OPTS['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG)
+logging.basicConfig(filename=CONFIG_OPTS['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %H:%M:%S")
 
 
 # parse command line arguments
@@ -92,7 +94,7 @@ args = parser.parse_args()
 
 username = args.username
 
-logging.info('Username = "%s".' % username)
+Log.info('Username = "%s".' % username)
 
 
 # parse the specified command
@@ -100,25 +102,25 @@ original_cmd = os.environ.get('SSH_ORIGINAL_COMMAND')
 
 if original_cmd == None:
     msg = 'Successfully authenticated, but this server does not provide shell access.'
-    logging.critical(msg)
+    Log.critical(msg)
     fatal_error(msg + '\n')
 
 parsed_cmd = string.split(original_cmd, ' ')
 
 if len(parsed_cmd) != 2:
     msg = 'Received invalid command "%s".' % original_cmd
-    logging.critical(msg)
+    Log.critical(msg)
     fatal_error(msg + '\n')
 
 command = parsed_cmd[0]
 reponame = re.sub('\'', '', parsed_cmd[1])
 
 if command in COMMANDS:
-    logging.info('Command = "%s".' % command)
+    Log.info('Command = "%s".' % command)
 
 else:
     msg = 'Received invalid command "%s". Must be one of: %s' % (command, ', '.join(s for s in COMMANDS.keys()))
-    logging.critical(msg)
+    Log.critical(msg)
     fatal_error(msg + '\n')
 
 
@@ -126,11 +128,11 @@ else:
 r = Repository(name = reponame, directory = CONFIG_OPTS['repo_dir'])
 
 if r.exists():
-    logging.info('Repository = "%s".' % reponame)
+    Log.info('Repository = "%s".' % reponame)
 
 else:
     msg = 'Repository "%s" does not exist.' % reponame
-    logging.critical(msg)
+    Log.critical(msg)
     fatal_error(msg + '\n')
 
 
@@ -143,20 +145,20 @@ perm_needed = COMMANDS[command]
 
 
 if perm_needed == Permissions.read:
-    logging.info('Read access requested.')
+    Log.info('Read access requested.')
 
 elif COMMANDS[command] == Permissions.write:
-    logging.info('Write access requested.')
+    Log.info('Write access requested.')
 
 
 if d.permission(reponame, username) == perm_needed:
-    logging.info('User "%s" has permission to access repository, executing requested command.' % username)
+    Log.info('User "%s" has permission to access repository, executing requested command.' % username)
     cmd = "%s %s/%s" % (command, CONFIG_OPTS['repo_dir'], reponame)
-    logging.info('Command = "%s".' % cmd)
+    Log.info('Command = "%s".' % cmd)
     os.system(cmd)
 
 else:
-    logging.info('User "%s" does not have the required permission.' % username)
+    Log.info('User "%s" does not have the required permission.' % username)
     fatal_error('You do not have permission to access "%s".\n' % reponame)
 
 
