@@ -1,3 +1,4 @@
+
 import os
 import sqlite3
 import sys
@@ -5,6 +6,10 @@ import sys
 def fatal_error(msg):
     sys.stderr.write(msg)
     sys.exit(-1)
+
+class Permissions:
+    read = 1
+    write = 2
 
 class Repository:
     def __init__(self, name, directory = ""):
@@ -19,10 +24,12 @@ class Database:
     def __init__(self, file):
         self.file = file
         self.conn = sqlite3.connect(file)
+        conn.execute('CREATE TABLE IF NOT EXISTS users (name text, key text)')
+        conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int)')
 
-    def repo_readable(self, repo_name, user_name):
-# query = "select p.permission from permissions as p where p.user_name='USER_NAME' and p.repository_name='REPO_NAME';"
-
-    def repo_writable(self, repo_name, user_name):
-# query = "select p.permission from permissions as p where p.user_name='USER_NAME' and p.repository_name='REPO_NAME';"
+    def permission(self, reponame, username):
+        c = self.conn
+        cur = c.execute('SELECT p.permission FROM permissions AS p WHERE p.user_name=\'?\' AND p.repository_name=\'?\'', (username, reponame))
+        permission = cur.fetchone()
+        return(permission)
 
