@@ -24,8 +24,8 @@ class Database:
     def __init__(self, file):
         self.file = file
         self.conn = sqlite3.connect(file)
-        conn.execute('CREATE TABLE IF NOT EXISTS users (name text, key text)')
-        conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS users (name text, key text)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int)')
 
     def permission(self, reponame, username):
         c = self.conn
