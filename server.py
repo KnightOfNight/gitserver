@@ -10,6 +10,7 @@ import sqlite3
 import string
 import sys
 
+from GitServer import fatal_error
 from GitServer import Repository
 from GitServer import Database
 
@@ -77,23 +78,19 @@ CONFIG_OPTS = {
 config = ConfigParser.ConfigParser()
 config_files = config.read(CONFIG_FILES)
 if not config_files:
-    sys.stderr.write('Configuration error: file not found. Must be one of: %s\n' % ', '.join(s for s in CONFIG_FILES))
-    sys.exit(-1)
+    fatal_error('Configuration file not found. Must be one of: %s\n' % ', '.join(s for s in CONFIG_FILES))
 
 if not config.has_section('default'):
-    sys.stderr.write('Configuration error: [default] section not found.\n')
-    sys.exit(-1)
+    fatal_error('Configuration error: [default] section not found.\n')
 
 for opt in CONFIG_OPTS:
     if not config.has_option('default', opt):
-        sys.stderr.write('Configuration error: [default] section missing "%s".\n' % opt)
-        sys.exit(-1)
+        fatal_error('Configuration error: [default] section missing "%s".\n' % opt)
 
     CONFIG_OPTS[opt] = config.get('default', opt)
 
     if not CONFIG_OPTS[opt]:
-        sys.stderr.write('Configuration error: option "%s" is empty.\n' % opt)
-        sys.exit(-1)
+        fatal_error('Configuration error: option "%s" is empty.\n' % opt)
 
 
 # setup logging
@@ -116,18 +113,18 @@ original_cmd = os.environ.get('SSH_ORIGINAL_COMMAND')
 if original_cmd == None:
     msg = 'No command provided in SSH_ORIGINAL_COMMAND, user attempted to access shell.'
     logging.critical(msg)
+
     msg = 'You have successfully authenticated, but this server does not provide shell access.\n'
-    sys.stderr.write(msg)
-    sys.exit(-1)
+    fatal_error(msg)
 
 parsed_cmd = string.split(original_cmd, ' ')
 
 if len(parsed_cmd) != 2:
     msg = 'Received invalid command "%s".' % original_cmd
     logging.critical(msg)
+
     msg = 'You must pass a single command with exactly one argument.\n'
-    sys.stderr.write(msg)
-    sys.exit(-1)
+    fatal_error(msg)
 
 command = parsed_cmd[0]
 repo_name = re.sub('\'', '', parsed_cmd[1])
@@ -138,8 +135,7 @@ if command in COMMANDS:
 else:
     msg = 'Received invalid command "%s". Must be one of: %s\n' % (command, ', '.join(s for s in COMMANDS.keys()))
     logging.critical(msg)
-    sys.stderr.write(msg)
-    sys.exit(-1)
+    fatal_error(msg)
 
 
 # check on the repository
@@ -151,8 +147,7 @@ if r.exists():
 else:
     msg = 'Repository "%s" does not exist.' % repo_name
     logging.critical(msg)
-    sys.stderr.write(msg)
-    sys.exit(-1)
+    fatal_error(msg)
 
 
 # setup the database connection
@@ -169,8 +164,7 @@ if COMMANDS[command] == PERM_READ:
     else:
         msg = 'Repository is not readable to user "%s".' % username
         logging.critical(msg)
-        sys.stderr.write(msg)
-        sys.exit(-1)
+        fatal_error(msg)
 
 elif COMMANDS[command] == PERM_WRITE:
     logging.info('Write access requested.')
@@ -181,8 +175,7 @@ elif COMMANDS[command] == PERM_WRITE:
     else:
         msg = 'Repository is not writable to user "%s".' % username
         logging.critical(msg)
-        sys.stderr.write(msg)
-        sys.exit(-1)
+        fatal_error(msg)
 
 
 sys.exit(0)

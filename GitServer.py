@@ -1,5 +1,10 @@
 import os
 import sqlite3
+import sys
+
+def fatal_error(msg):
+    sys.stderr.write(msg)
+    sys.exit(-1)
 
 class Repository:
     def __init__(self, name, directory = ""):
