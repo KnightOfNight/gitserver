@@ -20,3 +20,9 @@ class Database:
         self.file = file
         self.conn = sqlite3.connect(file)
 
+    def repo_readable(self, repo_name, user_name):
+# query = "select p.permission from permissions as p where p.user_name='USER_NAME' and p.repository_name='REPO_NAME';"
+
+    def repo_writable(self, repo_name, user_name):
+# query = "select p.permission from permissions as p where p.user_name='USER_NAME' and p.repository_name='REPO_NAME';"
+
