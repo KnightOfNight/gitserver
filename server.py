@@ -11,15 +11,9 @@ import string
 import sys
 
 from GitServer import fatal_error
+from GitServer import Permissions
 from GitServer import Repository
 from GitServer import Database
-
-
-# permissions
-# 1 read
-# 2 write
-PERM_READ = 1
-PERM_WRITE = 2
 
 
 # allowed Git commands
@@ -27,9 +21,9 @@ PERM_WRITE = 2
 # git-upload-archive
 # git-receive-pack
 COMMANDS = {
-    'git-upload-pack' : PERM_READ,
-    'git-upload-archive' : PERM_READ,
-    'git-receive-pack' : PERM_WRITE,
+    'git-upload-pack' : Permissions.read,
+    'git-upload-archive' : Permissions.read,
+    'git-receive-pack' : Permissions.write,
 }
 
 
@@ -105,71 +99,65 @@ logging.info('Username = "%s".' % username)
 original_cmd = os.environ.get('SSH_ORIGINAL_COMMAND')
 
 if original_cmd == None:
-    msg = 'No command provided in SSH_ORIGINAL_COMMAND, user attempted to access shell.'
+    msg = 'Successfully authenticated, but this server does not provide shell access.'
     logging.critical(msg)
-
-    msg = 'You have successfully authenticated, but this server does not provide shell access.\n'
-    fatal_error(msg)
+    fatal_error(msg + '\n')
 
 parsed_cmd = string.split(original_cmd, ' ')
 
 if len(parsed_cmd) != 2:
     msg = 'Received invalid command "%s".' % original_cmd
     logging.critical(msg)
-
-    msg = 'You must pass a single command with exactly one argument.\n'
-    fatal_error(msg)
+    fatal_error(msg + '\n')
 
 command = parsed_cmd[0]
-repo_name = re.sub('\'', '', parsed_cmd[1])
+reponame = re.sub('\'', '', parsed_cmd[1])
 
 if command in COMMANDS:
     logging.info('Command = "%s".' % command)
 
 else:
-    msg = 'Received invalid command "%s". Must be one of: %s\n' % (command, ', '.join(s for s in COMMANDS.keys()))
+    msg = 'Received invalid command "%s". Must be one of: %s' % (command, ', '.join(s for s in COMMANDS.keys()))
     logging.critical(msg)
-    fatal_error(msg)
+    fatal_error(msg + '\n')
 
 
 # check on the repository
-r = Repository(name = repo_name, directory = CONFIG_OPTS['repo_dir'])
+r = Repository(name = reponame, directory = CONFIG_OPTS['repo_dir'])
 
 if r.exists():
-    logging.info('Repository = "%s".' % repo_name)
+    logging.info('Repository = "%s".' % reponame)
 
 else:
-    msg = 'Repository "%s" does not exist.' % repo_name
+    msg = 'Repository "%s" does not exist.' % reponame
     logging.critical(msg)
-    fatal_error(msg)
+    fatal_error(msg + '\n')
 
 
 # setup the database connection
 d = Database(CONFIG_OPTS['database'])
 
 
-# check the command and the repo permissions
-if COMMANDS[command] == PERM_READ:
+# check the repo permissions and execute the requested command if allowed
+perm_needed = COMMANDS[command]
+
+
+if perm_needed == Permissions.read:
     logging.info('Read access requested.')
 
-    if d.repo_readable(repository, user):
-        logging.info('Repository is readable to user "%s", executing requested command.' % username)
-
-    else:
-        msg = 'Repository is not readable to user "%s".' % username
-        logging.critical(msg)
-        fatal_error(msg)
-
-elif COMMANDS[command] == PERM_WRITE:
+elif COMMANDS[command] == Permissions.write:
     logging.info('Write access requested.')
 
-    if d.repo_writable(repository, user):
-        logging.info('Repository is writable to user "%s", executing requested command.' % username)
 
-    else:
-        msg = 'Repository is not writable to user "%s".' % username
-        logging.critical(msg)
-        fatal_error(msg)
+if d.permission(reponame, username) == perm_needed:
+    logging.info('User "%s" has permission to access repository, executing requested command.' % username)
+    cmd = "%s %s/%s" % (command, CONFIG_OPTS['repo_dir'], reponame)
+    logging.info('Command = "%s".' % cmd)
+    os.system(cmd)
+
+else:
+    logging.info('User "%s" does not have the required permission.' % username)
+    fatal_error('You do not have permission to access "%s".\n' % repo_name)
 
 
 sys.exit(0)
