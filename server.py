@@ -67,6 +67,8 @@ for opt in CONFIG_OPTS:
 # setup logging
 logging.basicConfig(filename=CONFIG_OPTS['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %H:%M:%S")
 
+Log.info('session start')
+
 
 # parse command line arguments
 parser = argparse.ArgumentParser(description='Process a git command as accessed via an SSH connection.')
