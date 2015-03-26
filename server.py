@@ -115,6 +115,8 @@ if not command in COMMANDS:
     Log.critical(msg)
     fatal_error(msg)
 
+Log.info('command: %s' % command)
+
 
 # check on the repository
 r = Repository(name = reponame, directory = CONFIG_OPTS['repo_dir'])
@@ -130,6 +132,7 @@ if not r.exists():
     fatal_error(msg)
 
 Log.info('repository: %s' % r.name)
+
 
 # setup the database connection
 d = Database(CONFIG_OPTS['database'])
