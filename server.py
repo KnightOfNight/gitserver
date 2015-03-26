@@ -153,7 +153,7 @@ if d.permission(r.name, username) == perm_needed:
     os.system(cmd)
 
 else:
-    msg = 'permission denied accessing repository'
+    msg = 'repository "%s" permission denied' % r.name
 
     Log.critical(msg)
     fatal_error(msg)
