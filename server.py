@@ -159,7 +159,7 @@ else:
     Log.info('permission allowed by database: none (%d)' % perm_allowed)
 
 if perm_requested <= perm_allowed:
-    cmd = "%s %s" % (command, r.path())
+    cmd = "%s %s" % (command, r.path)
 
     Log.info('access granted')
     Log.info('executing command: %s' % cmd)

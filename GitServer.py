@@ -21,15 +21,25 @@ class Repository:
     def __init__(self, name, directory = ""):
         self.name = re.sub('[^a-zA-Z0-9]', '', name)
         self.directory = directory
-
-    def path(self):
-        return(self.directory + "/" + self.name)
+        self.path = self.directory + "/" + self.name
 
     def exists(self):
         if not self.name:
             return False
+
+        elif not os.path.isdir(self.path) or \
+                not os.path.isfile(self.path + "/config") or \
+                not os.path.isfile(self.path + "/description") or \
+                not os.path.isfile(self.path + "/HEAD") or \
+                not os.path.isdir(self.path + "/branches") or \
+                not os.path.isdir(self.path + "/hooks") or \
+                not os.path.isdir(self.path + "/info") or \
+                not os.path.isdir(self.path + "/objects") or \
+                not os.path.isdir(self.path + "/refs"):
+            return False
+
         else:
-            return(os.path.exists(self.path()))
+            return True
 
 
 class Database:
