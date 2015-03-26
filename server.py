@@ -107,7 +107,7 @@ if not command in COMMANDS:
     Log.critical(msg)
     fatal_error(msg)
 
-Log.info('command: %s' % command)
+Log.info('parsed command: %s' % command)
 
 
 # check on the repository
@@ -123,7 +123,7 @@ if not r.exists():
     Log.critical(msg)
     fatal_error(msg)
 
-Log.info('repository: %s' % r.name)
+Log.info('parsed (and sanitized) repository: %s' % r.name)
 
 
 # setup the database connection
