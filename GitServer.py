@@ -1,17 +1,21 @@
 
+
 import os
 import re
 import sqlite3
 import sys
+
 
 def fatal_error(msg):
     tag = "gitserver fatal error: "
     sys.stderr.write(tag + msg + "\n")
     sys.exit(-1)
 
+
 class Permissions:
     read = 1
     write = 2
+
 
 class Repository:
     def __init__(self, name, directory = ""):
@@ -26,6 +30,7 @@ class Repository:
             return False
         else:
             return(os.path.exists(self.path()))
+
 
 class Database:
     def __init__(self, file):
