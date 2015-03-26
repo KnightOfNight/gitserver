@@ -59,19 +59,20 @@ CONFIG_OPTS = {
 config = ConfigParser.ConfigParser()
 config_files = config.read(CONFIG_FILES)
 if not config_files:
-    fatal_error('Configuration file not found. Must be one of: %s\n' % ', '.join(s for s in CONFIG_FILES))
+    fatal_error('configuration file not found')
+# ', '.join(s for s in CONFIG_FILES)
 
 if not config.has_section('default'):
-    fatal_error('Configuration error: [default] section not found.\n')
+    fatal_error('configuration error, [default] section not found')
 
 for opt in CONFIG_OPTS:
     if not config.has_option('default', opt):
-        fatal_error('Configuration error: [default] section missing "%s".\n' % opt)
+        fatal_error('configuration error, [default] section missing option "%s"' % opt)
 
     CONFIG_OPTS[opt] = config.get('default', opt)
 
     if not CONFIG_OPTS[opt]:
-        fatal_error('Configuration error: option "%s" is empty.\n' % opt)
+        fatal_error('configuration error, option "%s" is empty' % opt)
 
 
 # setup logging
@@ -79,52 +80,54 @@ logging.basicConfig(filename=CONFIG_OPTS['log_file'], format='%(asctime)s %(leve
 
 
 # parse command line arguments
-parser = argparse.ArgumentParser(description='Process a git command as called via an SSH connection.')
+parser = argparse.ArgumentParser(description='Process a git command as accessed via an SSH connection.')
 parser.add_argument('-u', '--username', required=True, help='Name of the gitserver user account.')
 args = parser.parse_args()
 
 username = args.username
 
-Log.info('Username = "%s".' % username)
+Log.info('username: %s' % username)
 
 
 # parse the specified command
-original_cmd = os.environ.get('SSH_ORIGINAL_COMMAND')
+original_command = os.environ.get('SSH_ORIGINAL_COMMAND')
 
-if original_cmd == None:
-    msg = 'Successfully authenticated, but this server does not provide shell access.'
+if original_command == None:
+    msg = 'SSH_ORIGINAL_COMMAND is empty'
     Log.critical(msg)
-    fatal_error(msg + '\n')
 
-parsed_cmd = string.split(original_cmd, ' ')
+    msg = 'server does not provide shell access (no Git command provided)'
+    fatal_error(msg)
 
-if len(parsed_cmd) != 2:
-    msg = 'Received invalid command "%s".' % original_cmd
+Log.info('SSH_ORIGINAL_COMMAND: %s' % original_command)
+
+parsed_command = string.split(original_command, ' ')
+
+if len(parsed_command) != 2:
+    msg = 'command "%s" is invalid' % original_command
     Log.critical(msg)
-    fatal_error(msg + '\n')
+    fatal_error(msg)
 
-command = parsed_cmd[0]
-reponame = re.sub('\'', '', parsed_cmd[1])
+command = parsed_command[0]
+reponame = re.sub('\'', '', parsed_command[1])
 
-if command in COMMANDS:
-    Log.info('Command = "%s".' % command)
-
-else:
-    msg = 'Received invalid command "%s". Must be one of: %s' % (command, ', '.join(s for s in COMMANDS.keys()))
+if not command in COMMANDS:
+    msg = 'command "%s" is invalid' % original_command
     Log.critical(msg)
-    fatal_error(msg + '\n')
+    fatal_error(msg)
+#   msg = 'Received invalid command "%s". Must be one of: %s' % (command, ', '.join(s for s in COMMANDS.keys()))
 
 
 # check on the repository
 r = Repository(name = reponame, directory = CONFIG_OPTS['repo_dir'])
 
 if r.exists():
-    Log.info('Repository = "%s".' % reponame)
+    Log.info('repository: %s' % reponame)
 
 else:
-    msg = 'Repository "%s" does not exist.' % reponame
+    msg = 'repository "%s" does not exist' % reponame
     Log.critical(msg)
-    fatal_error(msg + '\n')
+    fatal_error(msg)
 
 
 # setup the database connection
@@ -134,23 +137,25 @@ d = Database(CONFIG_OPTS['database'])
 # check the repo permissions and execute the requested command if allowed
 perm_needed = COMMANDS[command]
 
-
 if perm_needed == Permissions.read:
-    Log.info('Read access requested.')
+    Log.info('access requested: read')
 
 elif COMMANDS[command] == Permissions.write:
-    Log.info('Write access requested.')
-
+    Log.info('access requested: write')
 
 if d.permission(reponame, username) == perm_needed:
-    Log.info('User "%s" has permission to access repository, executing requested command.' % username)
     cmd = "%s %s/%s" % (command, CONFIG_OPTS['repo_dir'], reponame)
-    Log.info('Command = "%s".' % cmd)
+
+    Log.info('permission granted')
+    Log.info('executing command: %s' % cmd)
+
     os.system(cmd)
 
 else:
-    Log.critical('User "%s" does not have the required permission.' % username)
-    fatal_error('You do not have permission to access "%s".\n' % reponame)
+    msg = 'permission denied accessing repository'
+
+    Log.info(msg)
+    fatal_error(msg)
 
 
 sys.exit(0)

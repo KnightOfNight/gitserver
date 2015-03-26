@@ -4,7 +4,8 @@ import sqlite3
 import sys
 
 def fatal_error(msg):
-    sys.stderr.write(msg)
+    tag = "gitserver fatal error: "
+    sys.stderr.write(tag + msg + "\n")
     sys.exit(-1)
 
 class Permissions:
