@@ -29,16 +29,6 @@ COMMANDS = {
 }
 
 
-# schema
-# table users
-#   name
-#   key
-# table permissions
-#   repository_name
-#   user_name
-#   permission
-
-
 # configuration file directives
 # log file
 # source directory

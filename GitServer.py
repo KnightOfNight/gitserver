@@ -42,6 +42,14 @@ class Repository:
             return True
 
 
+# database schema
+# table users
+#   name
+#   key
+# table permissions
+#   repository_name
+#   user_name
+#   permission
 class Database:
     def __init__(self, file):
         self.file = file
