@@ -144,7 +144,7 @@ else:
     msg = 'access denied'
     Log.critical(msg)
 
-    msg += ', you are not authorized to %s the repository' % Permission.name[perm_requested]
+    msg += ', you are not allowed %s access to the repository' % Permission.name[perm_requested]
     fatal_error(msg)
 
 
