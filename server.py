@@ -4,7 +4,6 @@
 import argparse
 import ConfigParser
 import logging
-import re
 import os
 import sqlite3
 import string
@@ -95,7 +94,7 @@ if original_command == None:
     msg = 'SSH_ORIGINAL_COMMAND is empty'
     Log.critical(msg)
 
-    msg = 'server does not provide shell access (no Git command provided)'
+    msg = 'no Git command specified, server does not provide shell access'
     fatal_error(msg)
 
 Log.info('SSH_ORIGINAL_COMMAND: %s' % original_command)
@@ -108,7 +107,7 @@ if len(parsed_command) != 2:
     fatal_error(msg)
 
 command = parsed_command[0]
-reponame = re.sub('\'', '', parsed_command[1])
+reponame = parsed_command[1]
 
 if not command in COMMANDS:
     msg = 'command "%s" is invalid' % original_command
@@ -119,14 +118,17 @@ if not command in COMMANDS:
 # check on the repository
 r = Repository(name = reponame, directory = CONFIG_OPTS['repo_dir'])
 
-if r.exists():
-    Log.info('repository: %s' % reponame)
-
-else:
-    msg = 'repository "%s" does not exist' % reponame
+if not r.name:
+    msg = 'repository name "%s" is invalid' % reponame
     Log.critical(msg)
     fatal_error(msg)
 
+if not r.exists():
+    msg = 'repository "%s" does not exist' % r.name
+    Log.critical(msg)
+    fatal_error(msg)
+
+Log.info('repository: %s' % r.name)
 
 # setup the database connection
 d = Database(CONFIG_OPTS['database'])
@@ -141,8 +143,8 @@ if perm_needed == Permissions.read:
 elif COMMANDS[command] == Permissions.write:
     Log.info('access requested: write')
 
-if d.permission(reponame, username) == perm_needed:
-    cmd = "%s %s/%s" % (command, CONFIG_OPTS['repo_dir'], reponame)
+if d.permission(r.name, username) == perm_needed:
+    cmd = "%s %s" % (command, r.path())
 
     Log.info('permission granted')
     Log.info('executing command: %s' % cmd)

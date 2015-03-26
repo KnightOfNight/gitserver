@@ -1,5 +1,6 @@
 
 import os
+import re
 import sqlite3
 import sys
 
@@ -14,12 +15,17 @@ class Permissions:
 
 class Repository:
     def __init__(self, name, directory = ""):
-        self.name = name
+        self.name = re.sub('[^a-zA-Z0-9]', '', name)
         self.directory = directory
 
+    def path(self):
+        return(self.directory + "/" + self.name)
+
     def exists(self):
-        path = self.directory + "/" + self.name
-        return os.path.exists(path)
+        if not self.name:
+            return False
+        else:
+            return(os.path.exists(self.path()))
 
 class Database:
     def __init__(self, file):
