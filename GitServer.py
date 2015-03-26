@@ -12,9 +12,10 @@ def fatal_error(msg):
     sys.exit(-1)
 
 
-class Permissions:
+class Permission:
     read = 1
     write = 2
+    name = [ "none", "read", "write" ]
 
 
 class Repository:

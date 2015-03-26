@@ -13,7 +13,7 @@ import time
 
 from Log import Log
 from GitServer import fatal_error
-from GitServer import Permissions
+from GitServer import Permission
 from GitServer import Repository
 from GitServer import Database
 
@@ -23,9 +23,9 @@ from GitServer import Database
 # git-upload-archive
 # git-receive-pack
 COMMANDS = {
-    'git-upload-pack' : Permissions.read,
-    'git-upload-archive' : Permissions.read,
-    'git-receive-pack' : Permissions.write,
+    'git-upload-pack' : Permission.read,
+    'git-upload-archive' : Permission.read,
+    'git-receive-pack' : Permission.write,
 }
 
 
@@ -130,35 +130,21 @@ d = Database(CONFIG_OPTS['database'])
 
 # check the repo permissions and execute the requested command if allowed
 perm_requested = COMMANDS[command]
-
-if perm_requested == Permissions.read:
-    Log.info('permission requested: read (%d)' % Permissions.read)
-
-elif perm_requested == Permissions.write:
-    Log.info('permission requested: write (%d)' % Permissions.write)
+Log.info('permission requested: %s (%d)' % (Permission.name[perm_requested], perm_requested))
 
 perm_allowed = d.permission(r.name, username)
-
-if perm_allowed == Permissions.read:
-    Log.info('permission allowed by database: read (%d)' % perm_allowed)
-
-elif perm_allowed == Permissions.write:
-    Log.info('permission allowed by database: write (%d)' % perm_allowed)
-
-else:
-    Log.info('permission allowed by database: none (%d)' % perm_allowed)
+Log.info('permission allowed: %s (%d)' % (Permission.name[perm_allowed], perm_allowed))
 
 if perm_requested <= perm_allowed:
     cmd = "%s %s" % (command, r.path)
-
     Log.info('access granted, executing command: %s' % cmd)
-
     os.system(cmd)
 
 else:
     msg = 'access denied'
-
     Log.critical(msg)
+
+    msg += ', you are not authorized to %s the repository' % Permission.name[perm_requested]
     fatal_error(msg)
 
 
