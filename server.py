@@ -146,13 +146,16 @@ elif perm_requested == Permissions.write:
 
 perm_granted = d.permission(r.name, username)
 
-Log.info('permission granted by database: %d' % perm_granted)
+Log.info('permission allowed by database: %d' % perm_granted)
 
 if perm_granted == Permissions.read:
     Log.info('permission granted by database: read (%d)' % perm_granted)
 
 elif perm_granted == Permissions.write:
     Log.info('permission granted by database: write (%d)' % perm_granted)
+
+else:
+    Log.info('permission granted by database: none (%d)' % perm_granted)
 
 if perm_requested <= perm_granted:
     cmd = "%s %s" % (command, r.path())

@@ -36,9 +36,15 @@ class Database:
 
     def permission(self, reponame, username):
         c = self.conn
+
         cur = c.execute('SELECT p.permission FROM permissions AS p WHERE p.user_name=? AND p.repository_name=?', (username, reponame))
+
         permission = cur.fetchone()
+
         if permission == None:
             permission = 0
+        else:
+            permission = int(permission)
+
         return(permission)
 
