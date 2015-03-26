@@ -144,20 +144,18 @@ if perm_requested == Permissions.read:
 elif perm_requested == Permissions.write:
     Log.info('permission requested: write (%d)' % Permissions.write)
 
-perm_granted = d.permission(r.name, username)
+perm_allowed = d.permission(r.name, username)
 
-Log.info('permission allowed by database: %d' % perm_granted)
+if perm_allowed == Permissions.read:
+    Log.info('permission allowed by database: read (%d)' % perm_allowed)
 
-if perm_granted == Permissions.read:
-    Log.info('permission granted by database: read (%d)' % perm_granted)
-
-elif perm_granted == Permissions.write:
-    Log.info('permission granted by database: write (%d)' % perm_granted)
+elif perm_allowed == Permissions.write:
+    Log.info('permission allowed by database: write (%d)' % perm_allowed)
 
 else:
-    Log.info('permission granted by database: none (%d)' % perm_granted)
+    Log.info('permission allowed by database: none (%d)' % perm_allowed)
 
-if perm_requested <= perm_granted:
+if perm_requested <= perm_allowed:
     cmd = "%s %s" % (command, r.path())
 
     Log.info('access granted')
