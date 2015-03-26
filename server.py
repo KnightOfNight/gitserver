@@ -60,7 +60,6 @@ config = ConfigParser.ConfigParser()
 config_files = config.read(CONFIG_FILES)
 if not config_files:
     fatal_error('configuration file not found')
-# ', '.join(s for s in CONFIG_FILES)
 
 if not config.has_section('default'):
     fatal_error('configuration error, [default] section not found')
@@ -115,7 +114,6 @@ if not command in COMMANDS:
     msg = 'command "%s" is invalid' % original_command
     Log.critical(msg)
     fatal_error(msg)
-#   msg = 'Received invalid command "%s". Must be one of: %s' % (command, ', '.join(s for s in COMMANDS.keys()))
 
 
 # check on the repository
