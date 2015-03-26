@@ -44,7 +44,7 @@ class Database:
         if permission == None:
             permission = 0
         else:
-            permission = int(permission)
+            permission = int(permission[0])
 
         return(permission)
 
