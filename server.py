@@ -152,7 +152,7 @@ if d.permission(reponame, username) == perm_needed:
 else:
     msg = 'permission denied accessing repository'
 
-    Log.info(msg)
+    Log.critical(msg)
     fatal_error(msg)
 
 
