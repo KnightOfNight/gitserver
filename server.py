@@ -144,7 +144,9 @@ if perm_needed == Permissions.read:
 elif COMMANDS[command] == Permissions.write:
     Log.info('access requested: write')
 
-if d.permission(r.name, username) == perm_needed:
+permission = d.permission(r.name, username)
+
+if perm_needed <= permission:
     cmd = "%s %s" % (command, r.path())
 
     Log.info('permission granted')
@@ -153,9 +155,11 @@ if d.permission(r.name, username) == perm_needed:
     os.system(cmd)
 
 else:
-    msg = 'repository "%s" permission denied' % r.name
+    msg = 'repository permission denied, database contains permission value %d' % (r.name, permission)
 
     Log.critical(msg)
+
+    msg = 'permission denied'
     fatal_error(msg)
 
 
