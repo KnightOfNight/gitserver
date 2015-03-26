@@ -151,8 +151,7 @@ else:
 if perm_requested <= perm_allowed:
     cmd = "%s %s" % (command, r.path)
 
-    Log.info('access granted')
-    Log.info('executing command: %s' % cmd)
+    Log.info('access granted, executing command: %s' % cmd)
 
     os.system(cmd)
 
