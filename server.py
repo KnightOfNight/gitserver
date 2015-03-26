@@ -5,6 +5,7 @@ import argparse
 import ConfigParser
 import logging
 import os
+import re
 import sqlite3
 import string
 import sys
@@ -119,7 +120,7 @@ if not command in COMMANDS:
 r = Repository(name = reponame, directory = CONFIG_OPTS['repo_dir'])
 
 if not r.name:
-    msg = 'repository name "%s" is invalid' % reponame
+    msg = 'repository name "%s" is invalid' % re.sub('\'', '', reponame)
     Log.critical(msg)
     fatal_error(msg)
 
