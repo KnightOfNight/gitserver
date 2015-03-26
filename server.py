@@ -136,17 +136,23 @@ d = Database(CONFIG_OPTS['database'])
 
 
 # check the repo permissions and execute the requested command if allowed
-perm_needed = COMMANDS[command]
+perm_requested = COMMANDS[command]
 
-if perm_needed == Permissions.read:
-    Log.info('access requested: read')
+if perm_requested == Permissions.read:
+    Log.info('permission requested: read (%d)' % Permissions.read)
 
-elif COMMANDS[command] == Permissions.write:
-    Log.info('access requested: write')
+elif perm_requested == Permissions.write:
+    Log.info('permission requested: write (%d)' % Permissions.write)
 
-permission = d.permission(r.name, username)
+perm_granted = d.permission(r.name, username)
 
-if perm_needed <= permission:
+if perm_granted == Permissions.read:
+    Log.info('permission granted by database: read (%d)' % perm_granted)
+
+elif perm_granted == Permissions.write:
+    Log.info('permission granted by database: write (%d)' % perm_granted)
+
+if perm_requested <= perm_granted:
     cmd = "%s %s" % (command, r.path())
 
     Log.info('permission granted')
@@ -155,11 +161,9 @@ if perm_needed <= permission:
     os.system(cmd)
 
 else:
-    msg = 'repository permission denied, database contains permission value %d' % (r.name, permission)
+    msg = 'permission denied'
 
     Log.critical(msg)
-
-    msg = 'permission denied'
     fatal_error(msg)
 
 
