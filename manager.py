@@ -109,16 +109,18 @@ print config_opts
 
 
 if args.mode == 'repo':
-    r = Repository(args.name, config_opts['repo_dir'])
+    reponame = args.name
+
+    r = Repository(reponame, config_opts['repo_dir'])
 
     if args.cmd == 'create':
-        logging.info('creating repository %s', args.name)
+        logging.info('creating repository %s', reponame)
 
         if not r.create():
             sys.exit(-1)
 
     elif args.cmd == 'delete':
-        yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % args.name)
+        yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % reponame)
 
         if yesno != 'yes':
             print 'Repository will not be deleted'
@@ -126,17 +128,29 @@ if args.mode == 'repo':
 
         yesno = raw_input('Verify the name of the repository: ')
 
-        if yesno != args.name:
+        if yesno != reponame:
             print 'Repository will not be deleted'
             sys.exit(0)
 
-        logging.info('deleting repository %s', args.name)
+        logging.info('deleting repository %s', reponame)
 
         if not r.delete():
             sys.exit(-1)
 
 elif mode == 'user':
-    print 'user mode'
+    username = args.name
+
+    d = Database(config_opts['database'])
+
+    if args.cmd == 'create':
+        userkey = raw_input('Copy and paste the SSH key user "%s": ' % username)
+
+        logging.info('creating user %s', username)
+
+        d.create_user(username, userkey)
+
+    elif args.cmd == 'delete':
+        logging.info('deleting user %s', username)
 
 elif mode == 'perm':
     print 'perm mode'
