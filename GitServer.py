@@ -8,6 +8,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import time
 
 
 def fatal_error(msg):
@@ -91,7 +92,7 @@ class Repository:
 
 # database schema
 # table users
-#   name
+#   name, unique
 #   key
 #   created_at
 #   updated_at
@@ -105,8 +106,8 @@ class Database:
     def __init__(self, file):
         self.file = file
         self.conn = sqlite3.connect(file)
-        self.conn.execute('CREATE TABLE IF NOT EXISTS users (name text, key text)')
-        self.conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS users (name text unique, key text unique, created_at int, updated_at int)')
+        self.conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int, created_at int, updated_at int)')
 
     def get_permission(self, reponame, username):
         c = self.conn
@@ -121,4 +122,30 @@ class Database:
             permission = int(permission[0])
 
         return(permission)
+
+#    def get_user(self, username)
+#        c = self.conn
+#
+#        cur = c.execute('SELECT u.name,u.key FROM users AS u WHERE u.name=?', (username))
+#
+#        user = cur.fetchone()
+#
+#        if user == None:
+#            return user
+#
+#        else:
+#            return (user[0], user[1])
+
+    def create_user(self, username, userkey):
+        c = self.conn
+
+        t = int(time.time())
+
+        try:
+            with c:
+                c.execute('INSERT INTO users VALUES(?, ?, ?, ?)', (username, userkey, t, t))
+
+        except sqlite3.IntegrityError:
+            logging.critical('user already exists')
+
 
