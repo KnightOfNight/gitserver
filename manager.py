@@ -2,7 +2,6 @@
 
 
 import argparse
-import input
 import logging
 import sys
 
@@ -119,13 +118,13 @@ if args.mode == 'repo':
             sys.exit(-1)
 
     elif args.cmd == 'delete':
-        yesno = input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % args.name)
+        yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % args.name)
 
         if yesno != 'yes':
             print 'Repository will not be deleted'
             sys.exit(0)
 
-        yesno = input('Verify the name of the repository: ')
+        yesno = raw_input('Verify the name of the repository: ')
 
         if yesno != args.name:
             print 'Repository will not be deleted'
