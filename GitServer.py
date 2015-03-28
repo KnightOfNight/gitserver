@@ -153,8 +153,8 @@ class Database:
     def delete_user(self, username):
         c = self.conn
 
-        c.execute('DELETE FROM users WHERE name=?', (username))
-        c.execute('DELETE FROM permissions WHERE user_name=?', (username))
+        c.execute('DELETE FROM users WHERE name=?', (username,))
+        c.execute('DELETE FROM permissions WHERE user_name=?', (username,))
 
         return(True)
 
