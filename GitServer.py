@@ -116,18 +116,12 @@ class Database:
 
         return(cur.fetchall())
 
-#    def get_user(self, username)
-#        c = self.conn
-#
-#        cur = c.execute('SELECT u.name,u.key FROM users AS u WHERE u.name=?', (username))
-#
-#        user = cur.fetchone()
-#
-#        if user == None:
-#            return user
-#
-#        else:
-#            return (user[0], user[1])
+    def get_user(self, username)
+        c = self.conn
+
+        cur = c.execute('SELECT name,key FROM users WHERE u.name=?', (username))
+
+        return(cur.fetchone())
 
     def create_user(self, username, userkey):
         c = self.conn
