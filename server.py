@@ -134,7 +134,7 @@ d = Database(CONFIG_OPTS['database'])
 perm_requested = COMMANDS[command]
 Log.info('permission requested: %s (%d)' % (Permission.name[perm_requested], perm_requested))
 
-perm_allowed = d.permission(r.name, username)
+perm_allowed = d.get_permission(r.name, username)
 Log.info('permission allowed: %s (%d)' % (Permission.name[perm_allowed], perm_allowed))
 
 if perm_requested <= perm_allowed:

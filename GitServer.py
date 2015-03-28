@@ -62,7 +62,7 @@ class Database:
         self.conn.execute('CREATE TABLE IF NOT EXISTS users (name text, key text)')
         self.conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int)')
 
-    def permission(self, reponame, username):
+    def get_permission(self, reponame, username):
         c = self.conn
 
         cur = c.execute('SELECT p.permission FROM permissions AS p WHERE p.user_name=? AND p.repository_name=?', (username, reponame))
