@@ -6,7 +6,7 @@ import os
 from GitServer import fatal_error
 
 
-def get:
+def get():
     config_opts = {
         'log_file' : '',
         'repo_dir' : '',
