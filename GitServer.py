@@ -183,7 +183,7 @@ class Database:
         else:
             # insert
             with c:
-                c.execute('INSERT INTO permissions VALUES(?, ?, ?, ?, ?)', (reponame, username, perm_value, t, t)
+                c.execute('INSERT INTO permissions VALUES(?, ?, ?, ?, ?)', (reponame, username, perm_value, t, t))
 
     def delete_permission(self, reponame, username):
         c = self.conn
