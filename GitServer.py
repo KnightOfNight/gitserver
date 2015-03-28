@@ -55,14 +55,14 @@ class Repository:
             os.mkdir(self.path)
 
         stdout = tempfile.mkstemp(dir = "/tmp")
-
-        s = open(stdout, 'w')
+        stdout_fd = stdout[0]
+        stdout_file = stdout[1]
 
         cmd = "git init --bare %s" % self.path
 
-        cmd_ret = subprocess.call(cmd, stdout = s, stderr=subprocess.STDOUT)
+        cmd_ret = subprocess.call(cmd, stdout = stdout_fd, stderr=subprocess.STDOUT)
 
-        s.close()
+        os.close(stdout_fd)
 
         if cmd_ret == 0:
             logging.info('repository created successfully')
@@ -71,12 +71,12 @@ class Repository:
         else:
             logging.critical('unable to initialize git repository')
 
-            with open(stdout) as f:
+            with open(stdout_file) as f:
                 print f.readline()
 
             ret = False
             
-        os.unlink(stdout)
+        os.unlink(stdout_file)
             
         return(ret)
 
