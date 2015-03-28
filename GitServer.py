@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -59,9 +60,9 @@ class Repository:
         stdout_fd = stdout[0]
         stdout_file = stdout[1]
 
-        cmd = "git init --bare %s" % self.path
+        cmd = 'git init --bare %s' % self.path
 
-        cmd_ret = subprocess.call(cmd, stdout = stdout_fd, stderr = subprocess.STDOUT)
+        cmd_ret = subprocess.call(cmd, stdout = stdout_fd, stderr = subprocess.STDOUT, shell = True)
 
         os.close(stdout_fd)
 
@@ -82,11 +83,13 @@ class Repository:
         return(ret)
 
     def delete(self):
-        if not self.exsits():
+        if not self.exists():
             logging.critical('repository does not exist')
             return(False)
 
         shutil.rmtree(self.path)
+
+        logging.info('repository deleted')
 
 
 # database schema
