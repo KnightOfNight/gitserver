@@ -44,7 +44,7 @@ class Repository:
             return True
 
     def create(self):
-        if self.exsits():
+        if self.exists():
             logging.critical('repository already exists')
             return(False)
 
