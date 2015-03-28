@@ -157,7 +157,7 @@ class Database:
     def get_permission(self, reponame, username):
         c = self.conn
 
-        cur = c.execute('SELECT p.permission FROM permissions AS p WHERE p.user_name=? AND p.repository_name=?', (username, reponame))
+        cur = c.execute('SELECT permission FROM permissions WHERE user_name=? AND repository_name=?', (username, reponame))
 
         permission = cur.fetchone()
 
@@ -178,7 +178,7 @@ class Database:
         if self.get_permission(reponame, username):
             # update
             with c:
-                c.execute('UPDATE permissions SET permission=?,updated_at=? WHERE repo_name=? AND user_name=?', (perm_value, reponame, username, t))
+                c.execute('UPDATE permissions SET permission=?,updated_at=? WHERE repository_name=? AND user_name=?', (perm_value, reponame, username, t))
 
         else:
             # insert
