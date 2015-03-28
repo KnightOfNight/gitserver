@@ -181,8 +181,8 @@ elif mode == 'user':
 
         logging.info('deleting user %s', username)
 
-#        if not d.delete_user(username):
-#            sys.exit(-1)
+        if not d.delete_user(username):
+            sys.exit(-1)
 
 elif mode == 'perm':
     print 'perm mode'
