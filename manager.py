@@ -106,16 +106,18 @@ print args
 print config_opts
 
 
-if mode == 'repo':
+if args.mode == 'repo':
     r = Repository(args.repo, config_opts['repo_dir'])
 
-    if cmd == 'create':
+    if args.cmd == 'create':
         logging.info('creating repository %s', args.repo)
+
         if not r.create():
             sys.exit(-1)
 
-    elif cmd == 'delete':
+    elif args.cmd == 'delete':
         logging.info('deleting repository %s', args.repo)
+
         if not r.delete():
             sys.exit(-1)
 
