@@ -131,10 +131,10 @@ cmd = args.cmd
 
 if mode == 'repo':
 
-    r = Repository(reponame, config_opts['repo_dir'])
-
     if cmd == 'create':
         reponame = args.name
+
+        r = Repository(reponame, config_opts['repo_dir'])
 
         logging.info('creating repository %s', reponame)
 
@@ -143,6 +143,8 @@ if mode == 'repo':
 
     elif cmd == 'delete':
         reponame = args.name
+
+        r = Repository(reponame, config_opts['repo_dir'])
 
         yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % reponame)
         print
