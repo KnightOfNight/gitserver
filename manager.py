@@ -3,12 +3,33 @@
 
 import argparse
 import logging
+import os
 import sys
 
 import Config
 from GitServer import Permission
 from GitServer import Database
 from GitServer import Repository
+
+
+def generate_authorized_keys(config_opts):
+    dir = os.path.expanduser('~/.ssh')
+    file = os.path.expanduser(dir + '/authorized_keys')
+
+    if not os.path.isdir(dir):
+        os.mkdir(dir, 0700)
+
+    d = Database(config_opts['database'])
+
+    users = d.get_users()
+
+    with open(file, "w") as f:
+        for user in users:
+            name = user[0]
+            key = user[1]
+            f.write('command="%s --username %s",no-port-forwarding,no-X11-forwarding,no-pty %s' % (config_opts['server_path'], name, key))
+
+    os.chmod(file, 0600)
 
 
 # repo create <repo>
@@ -183,6 +204,8 @@ elif mode == 'user':
 
         if not d.delete_user(username):
             sys.exit(-1)
+
+        generate_authorized_keys(config_opts)
 
 elif mode == 'perm':
     print 'perm mode'
