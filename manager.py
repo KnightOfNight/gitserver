@@ -149,6 +149,16 @@ elif mode == 'user':
     if cmd == 'create':
         userkey = raw_input('Copy and paste the SSH key user "%s": ' % username)
 
+        k = userkey.split(' ')
+
+        if length(k) < 2 or length(k) > 3:
+            logging.critical('SSH key is invalid, expecting key in the format "<tag> <key> [<comment>]"')
+
+        if length(k) == 3:
+            k.pop()
+
+        userkey = ' '.join(k)
+
         logging.info('creating user %s', username)
 
         d.create_user(username, userkey)
