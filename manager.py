@@ -130,17 +130,20 @@ mode = args.mode
 cmd = args.cmd
 
 if mode == 'repo':
-    reponame = args.name
 
     r = Repository(reponame, config_opts['repo_dir'])
 
     if cmd == 'create':
+        reponame = args.name
+
         logging.info('creating repository %s', reponame)
 
         if not r.create():
             sys.exit(-1)
 
     elif cmd == 'delete':
+        reponame = args.name
+
         yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % reponame)
         print
 
@@ -161,11 +164,12 @@ if mode == 'repo':
             sys.exit(-1)
 
 elif mode == 'user':
-    username = args.name
 
     d = Database(config_opts['database'])
 
     if cmd == 'create':
+        username = args.name
+
         userkey = raw_input('Copy and paste the SSH key user "%s": ' % username)
         print
 
@@ -186,6 +190,8 @@ elif mode == 'user':
             sys.exit(-1)
 
     elif cmd == 'delete':
+        username = args.name
+
         yesno = raw_input('Are you sure you want to delete the user "%s"?  This cannot be undone. [yes/NO] ' % username)
         print
 
