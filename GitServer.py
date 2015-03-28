@@ -3,6 +3,7 @@
 import os
 import re
 import sqlite3
+import subprocess
 import sys
 
 
@@ -41,6 +42,27 @@ class Repository:
 
         else:
             return True
+
+    def create(self):
+        if self.exsits():
+            logging.critical('repository already exists')
+            return(False)
+
+        # mkdir
+        os.mkdir(self.path)
+
+        # git init
+        cmd = "git init --bare %s" % self.path
+        if not subprocess.call(cmd):
+            logging.critical('unable to initialize git repository')
+            return(False)
+            
+        return(True)
+
+    def delete(self):
+        if not self.exsits():
+            logging.critical('repository does not exist')
+            return(False)
 
 
 # database schema
