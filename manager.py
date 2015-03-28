@@ -2,12 +2,11 @@
 
 
 import argparse
+import logging
 
 import Config
 from GitServer import Permission
 
-
-# load config, need repo dir
 
 # repo create <repo>
 
@@ -22,6 +21,9 @@ from GitServer import Permission
 # permission add read|write <repo> <user>
 
 # permission remove read|write <repo> <user>
+
+
+logging.basicConfig(format = '%(levelname)s: %(message)s', level = logging.DEBUG)
 
 
 config_opts = Config.get()
@@ -101,3 +103,25 @@ args = parser.parse_args()
 print args
 
 print config_opts
+
+
+if mode == 'repo':
+    r = Repository(args.repo, config_opts['repo_dir'])
+
+    if cmd == 'create':
+        logging.info('creating repository %s', args.repo)
+        if not r.create():
+            os.exit(-1)
+
+    elif cmd == 'delete':
+        logging.info('deleting repository %s', args.repo)
+        if not r.delete():
+            os.exit(-1)
+
+elif mode == 'user':
+
+elif mode == 'perm':
+
+
+os.exit(0)
+
