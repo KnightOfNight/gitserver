@@ -161,7 +161,7 @@ elif mode == 'user':
 
         logging.info('creating user %s', username)
 
-        if not d.create_user(username, userkey)
+        if not d.create_user(username, userkey):
             sys.exit(-1)
 
     elif cmd == 'delete':
