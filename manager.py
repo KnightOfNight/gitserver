@@ -161,10 +161,28 @@ elif mode == 'user':
 
         logging.info('creating user %s', username)
 
-        d.create_user(username, userkey)
+        if not d.create_user(username, userkey)
+            sys.exit(-1)
 
     elif cmd == 'delete':
-        logging.info('deleting user %s', username)
+        yesno = raw_input('Are you sure you want to delete the user "%s"?  This cannot be undone. [yes/NO] ' % username)
+        print
+
+        if yesno != 'yes':
+            logging.warn('user will not be deleted')
+            sys.exit(0)
+
+        yesno = raw_input('Verify the name of the user: ')
+        print
+
+        if yesno != username:
+            logging.warn('user will not be deleted')
+            sys.exit(0)
+
+        logging.info('deleting user %s', reponame)
+
+#        if not d.delete_user(username):
+#            sys.exit(-1)
 
 elif mode == 'perm':
     print 'perm mode'
