@@ -179,7 +179,7 @@ elif mode == 'user':
             logging.warn('user will not be deleted')
             sys.exit(0)
 
-        logging.info('deleting user %s', reponame)
+        logging.info('deleting user %s', username)
 
 #        if not d.delete_user(username):
 #            sys.exit(-1)
