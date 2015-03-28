@@ -23,7 +23,7 @@ from GitServer import Permission
 # permission remove read|write <repo> <user>
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description = 'Manage repositories, uers, and permissions.')
 
 mode = parser.add_subparsers(title = 'mode')
 
