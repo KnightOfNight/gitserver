@@ -67,7 +67,6 @@ class Repository:
         os.close(stdout_fd)
 
         if cmd_ret == 0:
-            logging.info('repository created successfully')
             ret = True
 
         else:
@@ -88,8 +87,6 @@ class Repository:
             return(False)
 
         shutil.rmtree(self.path)
-
-        logging.info('repository deleted')
 
 
 # database schema
