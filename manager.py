@@ -112,13 +112,13 @@ if args.mode == 'repo':
     r = Repository(args.repo, config_opts['repo_dir'])
 
     if args.cmd == 'create':
-        logging.info('creating repository %s', args.repo)
+        logging.info('creating repository %s', args.name)
 
         if not r.create():
             sys.exit(-1)
 
     elif args.cmd == 'delete':
-        logging.info('deleting repository %s', args.repo)
+        logging.info('deleting repository %s', args.name)
 
         if not r.delete():
             sys.exit(-1)
