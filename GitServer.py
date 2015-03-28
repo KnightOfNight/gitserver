@@ -189,7 +189,7 @@ class Database:
         c = self.conn
 
         with c:
-            c.execute('DELETE FROM permissions WHERE reponame=? AND user_name=?', (reponame, username))
+            c.execute('DELETE FROM permissions WHERE repository_name=? AND user_name=?', (reponame, username))
 
         logging.info(str(c.total_changes) + ' rows deleted')
 
