@@ -30,19 +30,21 @@ class Repository:
         if not self.name:
             return False
 
-        elif not os.path.isdir(self.path) or \
-                not os.path.isfile(self.path + "/config") or \
-                not os.path.isfile(self.path + "/description") or \
-                not os.path.isfile(self.path + "/HEAD") or \
-                not os.path.isdir(self.path + "/branches") or \
-                not os.path.isdir(self.path + "/hooks") or \
-                not os.path.isdir(self.path + "/info") or \
-                not os.path.isdir(self.path + "/objects") or \
-                not os.path.isdir(self.path + "/refs"):
+        elif not os.path.isdir(self.path):
             return False
 
-        else:
+        elif os.path.isfile(self.path + "/config") and \
+                os.path.isfile(self.path + "/description") and \
+                os.path.isfile(self.path + "/HEAD") and \
+                os.path.isdir(self.path + "/branches") and \
+                os.path.isdir(self.path + "/hooks") and \
+                os.path.isdir(self.path + "/info") and \
+                os.path.isdir(self.path + "/objects") and \
+                os.path.isdir(self.path + "/refs"):
             return True
+
+        else:
+            return False
 
     def create(self):
         if self.exists():
