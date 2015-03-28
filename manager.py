@@ -114,7 +114,6 @@ cmd = 'delete'
 p = sp.add_parser(cmd)
 p.set_defaults(cmd = cmd)
 p.add_argument('user')
-p.add_argument('perm', choices = [ Permission.name[Permission.read], Permission.name[Permission.write] ])
 p.add_argument('repo')
 
 cmd = 'list'
@@ -218,6 +217,30 @@ elif mode == 'user':
 elif mode == 'perm':
     print 'perm mode'
 
+    if cmd == "create":
+        username = args.name
+        permission = args.perm
+        reponame = args.repo
+
+        d = Database(config_opts['database'])
+
+        logging.info('creating permission %s %s %s' % (username, permission, reponame))
+
+        d.create_permission(reponame, username, permission)
+
+        generate_authorized_keys(config_opts)
+
+    elif cmd == "delete":
+        username = args.name
+        reponame = args.repo
+
+        d = Database(config_opts['database'])
+
+        logging.info('deleting permission %s * %s' % (username, reponame))
+
+        d.delete_permission(reponame, username)
+
+        generate_authorized_keys(config_opts)
 
 sys.exit(0)
 

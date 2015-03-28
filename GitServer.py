@@ -109,20 +109,6 @@ class Database:
         self.conn.execute('CREATE TABLE IF NOT EXISTS users (name text unique, key text unique, created_at int, updated_at int)')
         self.conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int, created_at int, updated_at int)')
 
-    def get_permission(self, reponame, username):
-        c = self.conn
-
-        cur = c.execute('SELECT p.permission FROM permissions AS p WHERE p.user_name=? AND p.repository_name=?', (username, reponame))
-
-        permission = cur.fetchone()
-
-        if permission == None:
-            permission = 0
-        else:
-            permission = int(permission[0])
-
-        return(permission)
-
     def get_users(self):
         c = self.conn
 
@@ -163,6 +149,47 @@ class Database:
         with c:
             c.execute('DELETE FROM users WHERE name=?', (username,))
             c.execute('DELETE FROM permissions WHERE user_name=?', (username,))
+
+        logging.info(str(c.total_changes) + ' rows deleted')
+
+        return(True)
+
+    def get_permission(self, reponame, username):
+        c = self.conn
+
+        cur = c.execute('SELECT p.permission FROM permissions AS p WHERE p.user_name=? AND p.repository_name=?', (username, reponame))
+
+        permission = cur.fetchone()
+
+        if permission == None:
+            permission = 0
+        else:
+            permission = int(permission[0])
+
+        return(permission)
+
+    def create_permission(self, reponame, username, permission):
+        c = self.conn
+
+        t = int(time.time())
+
+        perm_value = Permission.name.index(permission)
+
+        if self.get_permission(reponame, username):
+            # update
+            with c:
+                c.execute('UPDATE permissions SET permission=?,updated_at=? WHERE repo_name=? AND user_name=?', (perm_value, reponame, username, t))
+
+        else:
+            # insert
+            with c:
+                c.execute('INSERT INTO permissions VALUES(?, ?, ?, ?, ?)', (reponame, username, perm_value, t, t)
+
+    def delete_permission(self, reponame, username):
+        c = self.conn
+
+        with c:
+            c.execute('DELETE FROM permissions WHERE reponame=? AND user_name=?', (reponame, username))
 
         logging.info(str(c.total_changes) + ' rows deleted')
 
