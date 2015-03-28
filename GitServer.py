@@ -144,8 +144,9 @@ class Database:
         try:
             with c:
                 c.execute('INSERT INTO users VALUES(?, ?, ?, ?)', (username, userkey, t, t))
+                return(True)
 
         except sqlite3.IntegrityError:
             logging.critical('user or key already exists')
-
+            return(False)
 
