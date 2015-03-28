@@ -119,8 +119,10 @@ if mode == 'repo':
             os.exit(-1)
 
 elif mode == 'user':
+    print 'user mode'
 
 elif mode == 'perm':
+    print 'perm mode'
 
 
 os.exit(0)
