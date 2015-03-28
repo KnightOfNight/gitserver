@@ -48,21 +48,40 @@ class Repository:
             logging.critical('repository already exists')
             return(False)
 
-        # mkdir
         os.mkdir(self.path)
 
-        # git init
+        stdout = tempfile.mkstemp(dir = "/tmp")
+
+        s = open(stdout, 'w')
+
         cmd = "git init --bare %s" % self.path
-        if not subprocess.call(cmd):
+
+        cmd_ret = subprocess.call(cmd, stdout = s, stderr=subprocess.STDOUT):
+
+        s.close()
+
+        if cmd_ret == 0:
+            logging.info('repository created successfully')
+            ret = True
+
+        else:
             logging.critical('unable to initialize git repository')
-            return(False)
+
+            with open(stdout) as f:
+                print f.readline()
+
+            ret = False
             
-        return(True)
+        os.unlink(stdout)
+            
+        return(ret)
 
     def delete(self):
         if not self.exsits():
             logging.critical('repository does not exist')
             return(False)
+
+        shutil.rmtree(self.path)
 
 
 # database schema
