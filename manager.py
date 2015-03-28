@@ -7,6 +7,8 @@ import sys
 
 import Config
 from GitServer import Permission
+from GitServer import Database
+from GitServer import Repository
 
 
 # repo create <repo>
