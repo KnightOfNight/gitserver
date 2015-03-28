@@ -146,6 +146,6 @@ class Database:
                 c.execute('INSERT INTO users VALUES(?, ?, ?, ?)', (username, userkey, t, t))
 
         except sqlite3.IntegrityError:
-            logging.critical('user already exists')
+            logging.critical('user or key already exists')
 
 
