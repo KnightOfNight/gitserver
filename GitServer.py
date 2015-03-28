@@ -56,7 +56,7 @@ class Repository:
 
         cmd = "git init --bare %s" % self.path
 
-        cmd_ret = subprocess.call(cmd, stdout = s, stderr=subprocess.STDOUT):
+        cmd_ret = subprocess.call(cmd, stdout = s, stderr=subprocess.STDOUT)
 
         s.close()
 
