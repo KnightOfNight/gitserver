@@ -103,14 +103,10 @@ p.set_defaults(cmd = cmd)
 # parse args
 args = parser.parse_args()
 
-print args
 
-print config_opts
-
-
+# do something
 mode = args.mode
 cmd = args.cmd
-
 
 if mode == 'repo':
     reponame = args.name
@@ -127,13 +123,13 @@ if mode == 'repo':
         yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % reponame)
 
         if yesno != 'yes':
-            print 'Repository will not be deleted'
+            logging.warn('repository will not be deleted')
             sys.exit(0)
 
         yesno = raw_input('Verify the name of the repository: ')
 
         if yesno != reponame:
-            print 'Repository will not be deleted'
+            logging.warn('repository will not be deleted')
             sys.exit(0)
 
         logging.info('deleting repository %s', reponame)
