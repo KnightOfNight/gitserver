@@ -84,7 +84,7 @@ Log.info('parsed command: %s' % command)
 r = Repository(name = reponame, directory = config_opts['repo_dir'])
 
 if not r.name:
-    msg = 'repository name "%s" is invalid' % re.sub('\'', '', reponame)
+    msg = 'repository name "%s" is invalid' % reponame
     Log.critical(msg)
     fatal_error(msg)
 
