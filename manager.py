@@ -153,6 +153,7 @@ elif mode == 'user':
 
         if len(k) < 2 or len(k) > 3:
             logging.critical('SSH key is invalid, expecting key in the format "<tag> <key> [<comment>]"')
+            sys.exit(-1)
 
         if len(k) == 3:
             k.pop()
