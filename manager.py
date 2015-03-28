@@ -218,7 +218,7 @@ elif mode == 'perm':
     print 'perm mode'
 
     if cmd == "create":
-        username = args.name
+        username = args.user
         permission = args.perm
         reponame = args.repo
 
@@ -231,7 +231,7 @@ elif mode == 'perm':
         generate_authorized_keys(config_opts)
 
     elif cmd == "delete":
-        username = args.name
+        username = args.user
         reponame = args.repo
 
         d = Database(config_opts['database'])
