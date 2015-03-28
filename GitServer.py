@@ -51,7 +51,8 @@ class Repository:
             logging.critical('repository already exists')
             return(False)
 
-        os.mkdir(self.path)
+        if not os.path.isdir(self.path):
+            os.mkdir(self.path)
 
         stdout = tempfile.mkstemp(dir = "/tmp")
 
