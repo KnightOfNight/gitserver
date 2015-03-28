@@ -123,6 +123,13 @@ class Database:
 
         return(permission)
 
+    def get_users(self):
+        c = self.conn
+
+        cur = c.execute('SELECT name,key FROM users')
+
+        return(cur.fetchall())
+
 #    def get_user(self, username)
 #        c = self.conn
 #
