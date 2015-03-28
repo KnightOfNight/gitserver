@@ -11,6 +11,7 @@ def get():
         'log_file' : '',
         'repo_dir' : '',
         'database' : '',
+        'server_script' : '',
     }
 
     config = ConfigParser.ConfigParser()
