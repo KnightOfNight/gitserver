@@ -151,10 +151,10 @@ elif mode == 'user':
 
         k = userkey.split(' ')
 
-        if length(k) < 2 or length(k) > 3:
+        if len(k) < 2 or len(k) > 3:
             logging.critical('SSH key is invalid, expecting key in the format "<tag> <key> [<comment>]"')
 
-        if length(k) == 3:
+        if len(k) == 3:
             k.pop()
 
         userkey = ' '.join(k)
