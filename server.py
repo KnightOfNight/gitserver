@@ -11,6 +11,7 @@ import string
 import sys
 import time
 
+import Config
 from Log import Log
 from GitServer import fatal_error
 from GitServer import Permission
@@ -29,43 +30,12 @@ COMMANDS = {
 }
 
 
-# configuration file directives
-# log file
-# source directory
-# sqlite database location
-CONFIG_FILES = [
-    '/etc/gitserver.cfg',
-    os.path.expanduser('~/.gitserver.cfg'),
-]
-
-CONFIG_OPTS = {
-    'log_file' : '',
-    'repo_dir' : '',
-    'database' : '',
-}
-
-
-# parse the configuration file
-config = ConfigParser.ConfigParser()
-config_files = config.read(CONFIG_FILES)
-if not config_files:
-    fatal_error('configuration file not found')
-
-if not config.has_section('default'):
-    fatal_error('configuration error, [default] section not found')
-
-for opt in CONFIG_OPTS:
-    if not config.has_option('default', opt):
-        fatal_error('configuration error, [default] section missing option "%s"' % opt)
-
-    CONFIG_OPTS[opt] = config.get('default', opt)
-
-    if not CONFIG_OPTS[opt]:
-        fatal_error('configuration error, option "%s" is empty' % opt)
+# load the config
+config_opts = Config.get()
 
 
 # setup logging
-logging.basicConfig(filename=CONFIG_OPTS['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %H:%M:%S")
+logging.basicConfig(filename=config_opts['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %H:%M:%S")
 
 Log.info('session start')
 
@@ -111,7 +81,7 @@ Log.info('parsed command: %s' % command)
 
 
 # check on the repository
-r = Repository(name = reponame, directory = CONFIG_OPTS['repo_dir'])
+r = Repository(name = reponame, directory = config_opts['repo_dir'])
 
 if not r.name:
     msg = 'repository name "%s" is invalid' % re.sub('\'', '', reponame)
@@ -127,7 +97,7 @@ Log.info('parsed (and sanitized) repository: %s' % r.name)
 
 
 # setup the database connection
-d = Database(CONFIG_OPTS['database'])
+d = Database(config_opts['database'])
 
 
 # check the repo permissions and execute the requested command if allowed
