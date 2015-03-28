@@ -121,12 +121,14 @@ if mode == 'repo':
 
     elif cmd == 'delete':
         yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % reponame)
+        print
 
         if yesno != 'yes':
             logging.warn('repository will not be deleted')
             sys.exit(0)
 
         yesno = raw_input('Verify the name of the repository: ')
+        print
 
         if yesno != reponame:
             logging.warn('repository will not be deleted')
@@ -144,6 +146,7 @@ elif mode == 'user':
 
     if cmd == 'create':
         userkey = raw_input('Copy and paste the SSH key user "%s": ' % username)
+        print
 
         k = userkey.split(' ')
 
