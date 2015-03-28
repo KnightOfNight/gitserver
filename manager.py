@@ -3,7 +3,7 @@
 
 import argparse
 import logging
-import os
+import sys
 
 import Config
 from GitServer import Permission
@@ -112,12 +112,12 @@ if mode == 'repo':
     if cmd == 'create':
         logging.info('creating repository %s', args.repo)
         if not r.create():
-            os.exit(-1)
+            sys.exit(-1)
 
     elif cmd == 'delete':
         logging.info('deleting repository %s', args.repo)
         if not r.delete():
-            os.exit(-1)
+            sys.exit(-1)
 
 elif mode == 'user':
     print 'user mode'
@@ -126,5 +126,5 @@ elif mode == 'perm':
     print 'perm mode'
 
 
-os.exit(0)
+sys.exit(0)
 
