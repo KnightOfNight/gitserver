@@ -157,7 +157,7 @@ class Database:
             c.execute('DELETE FROM users WHERE name=?', (username,))
             c.execute('DELETE FROM permissions WHERE user_name=?', (username,))
 
-        logging.info(c.total_changes + ' rows deleted')
+        logging.info(str(c.total_changes) + ' rows deleted')
 
         return(True)
 
