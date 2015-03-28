@@ -27,7 +27,7 @@ def generate_authorized_keys(config_opts):
         for user in users:
             name = user[0]
             key = user[1]
-            f.write('command="%s --username %s",no-port-forwarding,no-X11-forwarding,no-pty %s' % (config_opts['server_path'], name, key))
+            f.write('command="%s --username %s",no-port-forwarding,no-X11-forwarding,no-pty %s' % (config_opts['server_script'], name, key))
 
     os.chmod(file, 0600)
 
