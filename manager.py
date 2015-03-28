@@ -109,7 +109,7 @@ print config_opts
 
 
 if args.mode == 'repo':
-    r = Repository(args.repo, config_opts['repo_dir'])
+    r = Repository(args.name, config_opts['repo_dir'])
 
     if args.cmd == 'create':
         logging.info('creating repository %s', args.name)
