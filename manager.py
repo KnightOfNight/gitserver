@@ -3,6 +3,7 @@
 
 import argparse
 
+import Config
 from GitServer import Permission
 
 
@@ -21,6 +22,9 @@ from GitServer import Permission
 # permission add read|write <repo> <user>
 
 # permission remove read|write <repo> <user>
+
+
+config_opts = Config.get()
 
 
 parser = argparse.ArgumentParser(description = 'Manage repositories, uers, and permissions.')
@@ -96,3 +100,4 @@ args = parser.parse_args()
 
 print args
 
+print config_opts
