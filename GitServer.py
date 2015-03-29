@@ -115,7 +115,7 @@ class Database:
         if username == None:
             cur = c.execute('SELECT name,key FROM users')
         else:
-            cur = c.execute('SELECT name,key FROM users WHERE name=?', (username))
+            cur = c.execute('SELECT name,key FROM users WHERE name=?', (username,))
 
         return(cur.fetchall())
 
