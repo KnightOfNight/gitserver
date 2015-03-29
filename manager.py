@@ -214,12 +214,12 @@ elif mode == 'user':
             print 'User: %s' % (user[0])
             perms = d.get_permissions(username = user[0])
             if not perms:
-                print 'Permissions: none'
+                print 'Perm: none'
             else:
                 perm_strings = []
                 for p in perms:
                     perm_strings.append("%s %s" % (Permission.name[int(p[2])], p[0]))
-                print 'Permissions: ' + ', '.join(perm_strings)
+                print 'Perm: ' + ', '.join(perm_strings)
             print
 
 elif mode == 'perm':
