@@ -19,7 +19,7 @@ from GitServer import Database
 
 # logging helper class
 class Log:
-    def __init__(self)
+    def __init__(self):
         self.session_id = "%.5f" % time.time()
 
     def format(self, msg):
