@@ -33,14 +33,14 @@ def generate_authorized_keys(config_opts):
 
 
 def confirm_deletion(description, value):
-    yesno = raw_input('Are you sure you want to delete the %s "%s"?  This cannot be undone. [yes/NO] ' % (description, value))
+    yesno = raw_input('Are you sure you want to delete the %s "%s" [yes/NO]? ' % (description, value))
     print
 
     if yesno != 'yes':
         logging.warn('%s will not be deleted' % (description))
         return(False)
 
-    yesno = raw_input('Type "yes" again to confirm: ')
+    yesno = raw_input('This cannot be undone.  Type "yes" again to confirm: ')
     print
 
     if yesno != 'yes':
@@ -50,23 +50,7 @@ def confirm_deletion(description, value):
     return(True)
 
 
-# repo create <repo>
-
-# repo delete <repo>
-
-# user create <user>
-
-# user update <user>
-
-# user delete <user>
-
-# permission add read|write <repo> <user>
-
-# permission remove read|write <repo> <user>
-
-
 logging.basicConfig(format = '%(levelname)s: %(message)s', level = logging.DEBUG)
-
 
 config_opts = Config.get()
 
@@ -175,6 +159,7 @@ if mode == 'repo':
             sys.exit(-1)
 
         logging.info('deleting all permissions on repository "%s"' % (reponame))
+
         d.delete_all_permissions(reponame)    
 
 elif mode == 'user':

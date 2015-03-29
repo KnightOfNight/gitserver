@@ -89,6 +89,8 @@ class Repository:
 
         shutil.rmtree(self.path)
 
+        return(True)
+
 
 # database schema
 # table users
