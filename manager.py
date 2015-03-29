@@ -210,7 +210,7 @@ elif mode == 'user':
         print "Users"
         print "---------------------"
         for user in users:
-            print "%s\n" % (user[0])
+            print "%s" % (user[0])
 
 elif mode == 'perm':
     d = Database(config_opts['database'])
