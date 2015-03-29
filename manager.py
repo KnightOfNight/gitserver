@@ -32,6 +32,24 @@ def generate_authorized_keys(config_opts):
     os.chmod(file, 0600)
 
 
+def confirm_deletion(description, value):
+    yesno = raw_input('Are you sure you want to delete the %s "%s"?  This cannot be undone. [yes/NO] ' % (description, value))
+    print
+
+    if yesno != 'yes':
+        logging.warn('%s will not be deleted' % (description))
+        return(False)
+
+    yesno = raw_input('Enter the %s to verify it will be deleted: ' % (description))
+    print
+
+    if yesno != username:
+        logging.warn('%s will not be deleted' % (description))
+        return(False)
+
+    return(True)
+
+
 # repo create <repo>
 
 # repo delete <repo>
@@ -146,18 +164,7 @@ if mode == 'repo':
 
         r = Repository(reponame, config_opts['repo_dir'])
 
-        yesno = raw_input('Are you sure you want to delete the repository "%s"?  This cannot be undone. [yes/NO] ' % reponame)
-        print
-
-        if yesno != 'yes':
-            logging.warn('repository will not be deleted')
-            sys.exit(0)
-
-        yesno = raw_input('Verify the name of the repository: ')
-        print
-
-        if yesno != reponame:
-            logging.warn('repository will not be deleted')
+        if not confirm_deletion('repository', reponame):
             sys.exit(0)
 
         logging.info('deleting repository "%s"', reponame)
@@ -194,18 +201,7 @@ elif mode == 'user':
     elif cmd == 'delete':
         username = args.name
 
-        yesno = raw_input('Are you sure you want to delete the user "%s"?  This cannot be undone. [yes/NO] ' % username)
-        print
-
-        if yesno != 'yes':
-            logging.warn('user will not be deleted')
-            sys.exit(0)
-
-        yesno = raw_input('Verify the name of the user: ')
-        print
-
-        if yesno != username:
-            logging.warn('user will not be deleted')
+        if not confirm_deletion('user', username):
             sys.exit(0)
 
         logging.info('deleting user "%s"', username)
@@ -218,12 +214,12 @@ elif mode == 'user':
 elif mode == 'perm':
     print 'perm mode'
 
+    d = Database(config_opts['database'])
+
     if cmd == "create":
         username = args.user
         permission = args.perm
         reponame = args.repo
-
-        d = Database(config_opts['database'])
 
         logging.info('creating "%s" permission for user "%s" on repository "%s"' % (permission, username, reponame))
 
@@ -235,7 +231,8 @@ elif mode == 'perm':
         username = args.user
         reponame = args.repo
 
-        d = Database(config_opts['database'])
+        if not confirm_deletion('permission', "%s %s" % (username, reponame)):
+            sys.exit(0)
 
         logging.info('deleting permissions for user "%s" on repository "%s"' % (username, reponame))
 
