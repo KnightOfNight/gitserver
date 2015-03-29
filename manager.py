@@ -213,6 +213,12 @@ elif mode == 'perm':
 
         logging.info('creating "%s" permission for user "%s" on repository "%s"' % (permission, username, reponame))
 
+        r = Repository(reponame, config_opts['repo_dir'])
+
+        if not r.exists():
+            logging.critical('repository "%s" does not exist' % (reponame))
+            sys.exit(-1)
+
         d.create_permission(reponame, username, Permission.name.index(permission))
 
         generate_authorized_keys(config_opts)
