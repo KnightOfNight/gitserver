@@ -192,7 +192,7 @@ class Database:
     def delete_permission(self, reponame, username):
         c = self.conn
 
-        if not c.get_permission(reponame, username):
+        if not self.get_permission(reponame, username):
             logging.critical('user "%s" does not have any permissions for repository "%s"' % (username, reponame))
             return(False)
 
