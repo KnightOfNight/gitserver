@@ -50,17 +50,20 @@ def confirm_deletion(description, value):
     return(True)
 
 
-logging.basicConfig(format = '%(levelname)s: %(message)s', level = logging.DEBUG)
-
+# load the config
 config_opts = Config.get()
 
 
-# argparse configuration
+# setup logging
+logging.basicConfig(format = '%(levelname)s: %(message)s', level = logging.DEBUG)
+
+
+# parse command line arguments
 parser = argparse.ArgumentParser(description = 'Manage repositories, uers, and permissions.')
 
 mode = parser.add_subparsers(title = 'mode')
 
-# repo mode argument parsing
+# repo mode arguments
 repo = mode.add_parser('repo')
 repo.set_defaults(mode='repo')
 
@@ -80,7 +83,7 @@ cmd = 'list'
 p = sp.add_parser(cmd)
 p.set_defaults(cmd = cmd)
 
-# user mode argument parsing
+# user mode arguments
 user = mode.add_parser('user')
 user.set_defaults(mode='user')
 
@@ -100,7 +103,7 @@ cmd = 'list'
 p = sp.add_parser(cmd)
 p.set_defaults(cmd = cmd)
 
-# perm mode argument parsing
+# perm mode arguments
 perm = mode.add_parser('perm')
 perm.set_defaults(mode='perm')
 
@@ -123,7 +126,7 @@ cmd = 'list'
 p = sp.add_parser(cmd)
 p.set_defaults(cmd = cmd)
 
-# parse args
+# do the actual parse args
 args = parser.parse_args()
 
 
