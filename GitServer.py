@@ -201,7 +201,7 @@ class Database:
 
         return(permission)
 
-    def get_permissions(self, reponame = None, username = None)
+    def get_permissions(self, reponame = None, username = None):
         c = self.conn
 
         if reponame == None and username == None:
