@@ -2,7 +2,6 @@
 
 
 import argparse
-import ConfigParser
 import logging
 import os
 import re
@@ -50,7 +49,7 @@ username = args.username
 Log.info('username: %s' % username)
 
 
-# parse the specified command
+# parse the original command
 original_command = os.environ.get('SSH_ORIGINAL_COMMAND')
 
 if original_command == None:
