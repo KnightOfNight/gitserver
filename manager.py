@@ -6,7 +6,7 @@ import logging
 import os
 import sys
 
-import Config
+from GitServer import Config
 from GitServer import Permission
 from GitServer import Database
 from GitServer import Repository

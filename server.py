@@ -10,9 +10,9 @@ import string
 import sys
 import time
 
-import Config
 from Log import Log
 from GitServer import fatal_error
+from GitServer import Config
 from GitServer import Permission
 from GitServer import Repository
 from GitServer import Database

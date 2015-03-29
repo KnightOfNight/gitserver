@@ -1,5 +1,6 @@
 
 
+import ConfigParser
 import logging
 import os
 import re
@@ -15,6 +16,38 @@ def fatal_error(msg):
     tag = "gitserver fatal error: "
     sys.stderr.write(tag + msg + "\n")
     sys.exit(-1)
+
+
+class Config:
+    @staticmethod
+    def get():
+        config_opts = {
+            'log_file' : '',
+            'repo_dir' : '',
+            'database' : '',
+            'server_script' : '',
+        }
+
+        config = ConfigParser.ConfigParser()
+
+        config_files = config.read(['/etc/gitserver.cfg', os.path.expanduser('~/.gitserver.cfg')])
+
+        if not config_files:
+            fatal_error('configuration file not found')
+
+        if not config.has_section('default'):
+            fatal_error('configuration error, [default] section not found')
+
+        for opt in config_opts:
+            if not config.has_option('default', opt):
+                fatal_error('configuration error, [default] section missing option "%s"' % opt)
+
+            config_opts[opt] = config.get('default', opt)
+
+            if not config_opts[opt]:
+                fatal_error('configuration error, option "%s" is empty' % opt)
+
+        return(config_opts)
 
 
 class Permission:
