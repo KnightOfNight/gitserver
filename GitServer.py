@@ -201,6 +201,23 @@ class Database:
 
         return(permission)
 
+    def get_permissions(self, reponame = None, username = None)
+        c = self.conn
+
+        if reponame == None and username == None:
+            cur = c.execute('SELECT repository_name,user_name,permission FROM permissions')
+
+        elif reponame == None:
+            cur = c.execute('SELECT repository_name,user_name,permission FROM permissions WHERE user_name=?', (username,))
+
+        elif username == None:
+            cur = c.execute('SELECT repository_name,user_name,permission FROM permissions WHERE repository_name=?', (reponame,))
+
+        else:
+            cur = c.execute('SELECT repository_name,user_name,permission FROM permissions WHERE user_name=? AND repository_name=?', (username, reponame))
+
+        return(curr.fetchall())
+
     def create_permission(self, reponame, username, permission):
         c = self.conn
 

@@ -173,6 +173,7 @@ elif mode == 'user':
         username = args.name
 
         userkey = raw_input('Copy and paste the SSH key user "%s": ' % username)
+        userkey = userkey.strip()
         print
 
         k = userkey.split(' ')
@@ -207,10 +208,14 @@ elif mode == 'user':
     elif cmd == 'list':
         users = d.get_user()
 
-        print "Users"
-        print "---------------------"
+        print "Users                Permissions"
+        print "-------------------- ---------------------------------------------------------------------------"
         for user in users:
-            print "%s" % (user[0])
+            sys.stdout.write("%-20s" % (user[0]))
+            perms = d.get_permissions(username = user[0])
+            for p in perms:
+                sys.stdout.write("%s %s, " % (Permission.name.index(int(p[2])), p[0]))
+            print
 
 elif mode == 'perm':
     d = Database(config_opts['database'])
