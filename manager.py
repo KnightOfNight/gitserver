@@ -212,9 +212,12 @@ elif mode == 'user':
         print "-------------------- ---------------------------------------------------------------------------"
         for user in users:
             sys.stdout.write("%-20s " % (user[0]))
-            perms = d.get_permissions(username = user[0])
-            for p in perms:
-                sys.stdout.write("%s %s, " % (Permission.name[int(p[2])], p[0]))
+            if perms == None:
+                sys.stdout.write("No Permissions")
+            else:
+                perms = d.get_permissions(username = user[0])
+                for p in perms:
+                    sys.stdout.write("%s %s, " % (Permission.name[int(p[2])], p[0]))
             print
 
 elif mode == 'perm':
