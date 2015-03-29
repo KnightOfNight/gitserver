@@ -10,7 +10,6 @@ import string
 import sys
 import time
 
-from Log import Log
 from GitServer import fatal_error
 from GitServer import Config
 from GitServer import Permission
@@ -18,11 +17,29 @@ from GitServer import Repository
 from GitServer import Database
 
 
+# logging helper class
+class Log:
+    def __init__(self)
+        self.session_id = "%.5f" % time.time()
+
+    def format(self, msg):
+        return("%s %s" % (self.session_id, msg))
+
+    def info(msg):
+        logging.info(self.format(msg))
+
+    def warning(msg):
+        logging.warning(self.format(msg))
+
+    def error(msg):
+        logging.error(self.format(msg))
+
+    def critical(msg):
+        logging.critical(self.format(msg))
+
+
 # allowed Git commands
-# git-upload-pack
-# git-upload-archive
-# git-receive-pack
-COMMANDS = {
+allowed_git_commands = {
     'git-upload-pack' : Permission.read,
     'git-upload-archive' : Permission.read,
     'git-receive-pack' : Permission.write,
@@ -36,7 +53,9 @@ config_opts = Config.get()
 # setup logging
 logging.basicConfig(filename=config_opts['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %H:%M:%S")
 
-Log.info('session start')
+log = Log()
+
+log.info('session start')
 
 
 # parse command line arguments
@@ -46,7 +65,7 @@ args = parser.parse_args()
 
 username = args.username
 
-Log.info('username: %s' % username)
+log.info('username: %s' % username)
 
 
 # parse the original command
@@ -54,29 +73,29 @@ original_command = os.environ.get('SSH_ORIGINAL_COMMAND')
 
 if original_command == None:
     msg = 'SSH_ORIGINAL_COMMAND is empty'
-    Log.critical(msg)
+    log.critical(msg)
 
     msg = 'no Git command specified, server does not provide shell access'
     fatal_error(msg)
 
-Log.info('SSH_ORIGINAL_COMMAND: %s' % original_command)
+log.info('SSH_ORIGINAL_COMMAND: %s' % original_command)
 
 parsed_command = string.split(original_command, ' ')
 
 if len(parsed_command) != 2:
     msg = 'command "%s" is invalid' % original_command
-    Log.critical(msg)
+    log.critical(msg)
     fatal_error(msg)
 
 command = parsed_command[0]
 reponame = parsed_command[1]
 
-if not command in COMMANDS:
+if not command in allowed_git_commands:
     msg = 'command "%s" is invalid' % original_command
-    Log.critical(msg)
+    log.critical(msg)
     fatal_error(msg)
 
-Log.info('parsed command: %s' % command)
+log.info('parsed command: %s' % command)
 
 
 # check on the repository
@@ -84,15 +103,15 @@ r = Repository(name = reponame, directory = config_opts['repo_dir'])
 
 if not r.name:
     msg = 'repository name "%s" is invalid' % reponame
-    Log.critical(msg)
+    log.critical(msg)
     fatal_error(msg)
 
 if not r.exists():
     msg = 'repository "%s" does not exist' % r.name
-    Log.critical(msg)
+    log.critical(msg)
     fatal_error(msg)
 
-Log.info('parsed (and sanitized) repository: %s' % r.name)
+log.info('parsed (and sanitized) repository: %s' % r.name)
 
 
 # setup the database connection
@@ -100,20 +119,20 @@ d = Database(config_opts['database'])
 
 
 # check the repo permissions and execute the requested command if allowed
-perm_requested = COMMANDS[command]
-Log.info('permission requested: %s (%d)' % (Permission.name[perm_requested], perm_requested))
+perm_requested = allowed_git_commands[command]
+log.info('permission requested: %s (%d)' % (Permission.name[perm_requested], perm_requested))
 
 perm_allowed = d.get_permission(r.name, username)
-Log.info('permission allowed: %s (%d)' % (Permission.name[perm_allowed], perm_allowed))
+log.info('permission allowed: %s (%d)' % (Permission.name[perm_allowed], perm_allowed))
 
 if perm_requested <= perm_allowed:
     cmd = "%s %s" % (command, r.path)
-    Log.info('access granted, executing command: %s' % cmd)
+    log.info('access granted, executing command: %s' % cmd)
     os.system(cmd)
 
 else:
     msg = 'access denied'
-    Log.critical(msg)
+    log.critical(msg)
 
     msg += ', you are not allowed %s access to the repository' % Permission.name[perm_requested]
     fatal_error(msg)
