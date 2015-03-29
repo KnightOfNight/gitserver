@@ -204,6 +204,14 @@ elif mode == 'user':
 
         generate_authorized_keys(config_opts)
 
+    elif cmd == 'list':
+        users = d.get_user()
+
+        print "Users"
+        print "---------------------"
+        for user in users:
+            print "%s\n" % (user[0])
+
 elif mode == 'perm':
     d = Database(config_opts['database'])
 
