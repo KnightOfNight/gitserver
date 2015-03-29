@@ -51,7 +51,7 @@ class Repository:
 
     def create(self):
         if self.exists():
-            logging.critical('repository already exists')
+            logging.critical('repository "%s" already exists' % (self.name))
             return(False)
 
         if not os.path.isdir(self.path):
@@ -84,7 +84,7 @@ class Repository:
 
     def delete(self):
         if not self.exists():
-            logging.critical('repository does not exist')
+            logging.critical('repository "%s" does not exist' % (self.name))
             return(False)
 
         shutil.rmtree(self.path)
@@ -109,22 +109,22 @@ class Database:
         self.conn.execute('CREATE TABLE IF NOT EXISTS users (name text unique, key text unique, created_at int, updated_at int)')
         self.conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int, created_at int, updated_at int)')
 
-    def get_users(self):
+    def get_user(self, username = None)
         c = self.conn
 
-        cur = c.execute('SELECT name,key FROM users')
+        if username == None:
+            cur = c.execute('SELECT name,key FROM users')
+        else:
+            cur = c.execute('SELECT name,key FROM users WHERE u.name=?', (username))
 
         return(cur.fetchall())
 
-    def get_user(self, username)
-        c = self.conn
-
-        cur = c.execute('SELECT name,key FROM users WHERE u.name=?', (username))
-
-        return(cur.fetchone())
-
     def create_user(self, username, userkey):
         c = self.conn
+
+        if c.get_user(username):
+            logging.critical('user "%s" already exists')
+            return(False)
 
         t = int(time.time())
 
@@ -140,11 +140,15 @@ class Database:
     def delete_user(self, username):
         c = self.conn
 
+        if not c.get_user(username):
+            logging.critical('user "%s" does not exist' % (username))
+            return(False)
+
         with c:
             c.execute('DELETE FROM users WHERE name=?', (username,))
             c.execute('DELETE FROM permissions WHERE user_name=?', (username,))
 
-        logging.info(str(c.total_changes) + ' rows deleted')
+        logging.debug(str(c.total_changes) + ' rows deleted')
 
         return(True)
 
@@ -165,27 +169,35 @@ class Database:
     def create_permission(self, reponame, username, permission):
         c = self.conn
 
-        t = int(time.time())
+        if not c.get_user(username):
+            logging.critical('user "%s" does not exist')
+            return(False)
 
-        perm_value = Permission.name.index(permission)
+        t = int(time.time())
 
         if self.get_permission(reponame, username):
             # update
             with c:
-                c.execute('UPDATE permissions SET permission=?,updated_at=? WHERE repository_name=? AND user_name=?', (perm_value, reponame, username, t))
+                c.execute('UPDATE permissions SET permission=?,updated_at=? WHERE repository_name=? AND user_name=?', (permission, t, reponame, username))
 
         else:
             # insert
             with c:
-                c.execute('INSERT INTO permissions VALUES(?, ?, ?, ?, ?)', (reponame, username, perm_value, t, t))
+                c.execute('INSERT INTO permissions VALUES(?, ?, ?, ?, ?)', (reponame, username, permission, t, t))
+
+        return(True)
 
     def delete_permission(self, reponame, username):
         c = self.conn
 
+        if not c.get_permission(reponame, username):
+            logging.critical('user "%s" does not have any permissions for repository "%s"' % (username, reponame))
+            return(False)
+
         with c:
             c.execute('DELETE FROM permissions WHERE repository_name=? AND user_name=?', (reponame, username))
 
-        logging.info(str(c.total_changes) + ' rows deleted')
+        logging.debug(str(c.total_changes) + ' rows deleted')
 
         return(True)
 

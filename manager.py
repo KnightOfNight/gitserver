@@ -21,7 +21,7 @@ def generate_authorized_keys(config_opts):
 
     d = Database(config_opts['database'])
 
-    users = d.get_users()
+    users = d.get_user()
 
     with open(file, "w") as f:
         for user in users:
@@ -53,6 +53,7 @@ logging.basicConfig(format = '%(levelname)s: %(message)s', level = logging.DEBUG
 config_opts = Config.get()
 
 
+# argparse configuration
 parser = argparse.ArgumentParser(description = 'Manage repositories, uers, and permissions.')
 
 mode = parser.add_subparsers(title = 'mode')
@@ -135,7 +136,7 @@ if mode == 'repo':
 
         r = Repository(reponame, config_opts['repo_dir'])
 
-        logging.info('creating repository %s', reponame)
+        logging.info('creating repository "%s"', reponame)
 
         if not r.create():
             sys.exit(-1)
@@ -159,7 +160,7 @@ if mode == 'repo':
             logging.warn('repository will not be deleted')
             sys.exit(0)
 
-        logging.info('deleting repository %s', reponame)
+        logging.info('deleting repository "%s"', reponame)
 
         if not r.delete():
             sys.exit(-1)
@@ -185,7 +186,7 @@ elif mode == 'user':
 
         userkey = ' '.join(k)
 
-        logging.info('creating user %s', username)
+        logging.info('creating user "%s"', username)
 
         if not d.create_user(username, userkey):
             sys.exit(-1)
@@ -207,7 +208,7 @@ elif mode == 'user':
             logging.warn('user will not be deleted')
             sys.exit(0)
 
-        logging.info('deleting user %s', username)
+        logging.info('deleting user "%s"', username)
 
         if not d.delete_user(username):
             sys.exit(-1)
@@ -224,9 +225,9 @@ elif mode == 'perm':
 
         d = Database(config_opts['database'])
 
-        logging.info('creating permission %s %s %s' % (username, permission, reponame))
+        logging.info('creating "%s" permission for user "%s" on repository "%s"' % (permission, username, reponame))
 
-        d.create_permission(reponame, username, permission)
+        d.create_permission(reponame, username, Permission.name.index(permission))
 
         generate_authorized_keys(config_opts)
 
@@ -236,7 +237,7 @@ elif mode == 'perm':
 
         d = Database(config_opts['database'])
 
-        logging.info('deleting permission %s * %s' % (username, reponame))
+        logging.info('deleting permissions for user "%s" on repository "%s"' % (username, reponame))
 
         d.delete_permission(reponame, username)
 
