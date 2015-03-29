@@ -109,7 +109,7 @@ class Database:
         self.conn.execute('CREATE TABLE IF NOT EXISTS users (name text unique, key text unique, created_at int, updated_at int)')
         self.conn.execute('CREATE TABLE IF NOT EXISTS permissions (repository_name text, user_name text, permission int, created_at int, updated_at int)')
 
-    def get_user(self, username = None)
+    def get_user(self, username = None):
         c = self.conn
 
         if username == None:
