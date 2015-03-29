@@ -122,7 +122,7 @@ class Database:
     def create_user(self, username, userkey):
         c = self.conn
 
-        if c.get_user(username):
+        if self.get_user(username):
             logging.critical('user "%s" already exists')
             return(False)
 
@@ -140,7 +140,7 @@ class Database:
     def delete_user(self, username):
         c = self.conn
 
-        if not c.get_user(username):
+        if not self.get_user(username):
             logging.critical('user "%s" does not exist' % (username))
             return(False)
 
@@ -169,7 +169,7 @@ class Database:
     def create_permission(self, reponame, username, permission):
         c = self.conn
 
-        if not c.get_user(username):
+        if not self.get_user(username):
             logging.critical('user "%s" does not exist')
             return(False)
 
