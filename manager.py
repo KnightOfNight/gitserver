@@ -202,8 +202,6 @@ elif mode == 'user':
         generate_authorized_keys(config_opts)
 
 elif mode == 'perm':
-    print 'perm mode'
-
     d = Database(config_opts['database'])
 
     if cmd == "create":
