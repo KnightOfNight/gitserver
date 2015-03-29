@@ -201,3 +201,13 @@ class Database:
 
         return(True)
 
+    def delete_all_permissions(self, reponame):
+        c = self.conn
+
+        with c:
+            c.execute('DELETE FROM permissions WHERE repository_name=?', (reponame,))
+
+        logging.debug(str(c.total_changes) + ' rows deleted')
+
+        return(True)
+

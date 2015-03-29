@@ -40,10 +40,10 @@ def confirm_deletion(description, value):
         logging.warn('%s will not be deleted' % (description))
         return(False)
 
-    yesno = raw_input('Enter the %s to verify it will be deleted: ' % (description))
+    yesno = raw_input('Type "yes" again to confirm: ')
     print
 
-    if yesno != username:
+    if yesno != 'yes':
         logging.warn('%s will not be deleted' % (description))
         return(False)
 
@@ -147,6 +147,8 @@ args = parser.parse_args()
 mode = args.mode
 cmd = args.cmd
 
+d = Database(config_opts['database'])
+
 if mode == 'repo':
 
     if cmd == 'create':
@@ -154,7 +156,7 @@ if mode == 'repo':
 
         r = Repository(reponame, config_opts['repo_dir'])
 
-        logging.info('creating repository "%s"', reponame)
+        logging.info('creating repository "%s"' % (reponame))
 
         if not r.create():
             sys.exit(-1)
@@ -167,10 +169,13 @@ if mode == 'repo':
         if not confirm_deletion('repository', reponame):
             sys.exit(0)
 
-        logging.info('deleting repository "%s"', reponame)
+        logging.info('deleting repository "%s"' % (reponame))
 
         if not r.delete():
             sys.exit(-1)
+
+        logging.info('deleting all permissions on repository "%s"' % (reponame))
+        d.delete_all_permissions(reponame)    
 
 elif mode == 'user':
 
@@ -193,7 +198,7 @@ elif mode == 'user':
 
         userkey = ' '.join(k)
 
-        logging.info('creating user "%s"', username)
+        logging.info('creating user "%s"' % (username))
 
         if not d.create_user(username, userkey):
             sys.exit(-1)
@@ -204,7 +209,7 @@ elif mode == 'user':
         if not confirm_deletion('user', username):
             sys.exit(0)
 
-        logging.info('deleting user "%s"', username)
+        logging.info('deleting user "%s"' % (username))
 
         if not d.delete_user(username):
             sys.exit(-1)
