@@ -216,7 +216,7 @@ class Database:
         else:
             cur = c.execute('SELECT repository_name,user_name,permission FROM permissions WHERE user_name=? AND repository_name=?', (username, reponame))
 
-        return(curr.fetchall())
+        return(cur.fetchall())
 
     def create_permission(self, reponame, username, permission):
         c = self.conn
