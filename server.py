@@ -25,16 +25,16 @@ class Log:
     def format(self, msg):
         return("%s %s" % (self.session_id, msg))
 
-    def info(msg):
+    def info(self, msg):
         logging.info(self.format(msg))
 
-    def warning(msg):
+    def warning(self, msg):
         logging.warning(self.format(msg))
 
-    def error(msg):
+    def error(self, msg):
         logging.error(self.format(msg))
 
-    def critical(msg):
+    def critical(self, msg):
         logging.critical(self.format(msg))
 
 
