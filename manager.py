@@ -174,6 +174,12 @@ if mode == 'repo':
         print
         for r in repos:
             print 'Repo: %s' % r
+            perms = d.get_permissions(reponame = r)
+            if not perms:
+                print 'Perm: none'
+
+            else:
+                print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (p[1], Permission.name[int(p[2])]), p ) )
             print
 
 elif mode == 'user':
@@ -226,11 +232,9 @@ elif mode == 'user':
             perms = d.get_permissions(username = user[0])
             if not perms:
                 print 'Perm: none'
+
             else:
-                perm_strings = []
-                for p in perms:
-                    perm_strings.append("%s %s" % (Permission.name[int(p[2])], p[0]))
-                print 'Perm: ' + ', '.join(perm_strings)
+                print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (Permission.name[int(p[2])], p[0]), p ) )
             print
 
 elif mode == 'perm':
