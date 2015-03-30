@@ -55,6 +55,39 @@ def confirm_deletion(description, value):
 
 
 #
+# prompt the user for an SSH key
+def input_get_ssh_key():
+    sshkey = ''
+
+    while not sshkey:
+        sshkey = raw_input('Enter SSH key: ').strip()
+
+        if not sshkey:
+            continue
+
+        k = sshkey.split(' ')
+
+        if len(k) < 2 or len(k) > 3:
+            print 'SSH key is invalid, expecting key in the format "<tag> <key> [<comment>]"'
+            sshkey = ''
+            continue
+
+        keytype = k[0]
+        keydata = k[1]
+
+        if keytype != 'ssh-dss' and keytype != 'ssh-rsa':
+            print 'SSH key is invalid, key type "%s" not recognized' % (keytype)
+            sshkey = ''
+            continue
+
+        sshkey = '%s %s' % (keytype, keydata)
+
+    print
+
+    return(sshkey)
+
+
+#
 # load the config
 config_opts = Config.get()
 
