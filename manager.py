@@ -101,6 +101,11 @@ p = sp.add_parser(cmd)
 p.set_defaults(cmd = cmd)
 p.add_argument('name')
 
+cmd = 'update'
+p = sp.add_parser(cmd)
+p.set_defaults(cmd = cmd)
+p.add_argument('name')
+
 cmd = 'delete'
 p = sp.add_parser(cmd)
 p.set_defaults(cmd = cmd)
@@ -211,6 +216,9 @@ elif mode == 'user':
 
         if not d.create_user(username, userkey):
             sys.exit(-1)
+
+    elif cmd == 'update':
+        username = args.name
 
     elif cmd == 'delete':
         username = args.name
