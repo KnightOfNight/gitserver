@@ -125,18 +125,6 @@ class Repository:
         return(True)
 
 
-# database schema
-# table users
-#   name, unique
-#   key
-#   created_at
-#   updated_at
-# table permissions
-#   repository_name
-#   user_name
-#   permission
-#   created_at
-#   updated_at
 class Database:
     def __init__(self, file):
         self.file = file
