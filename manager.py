@@ -165,6 +165,15 @@ if mode == 'repo':
 
         d.delete_all_permissions(reponame)    
 
+    elif cmd == 'list':
+        
+        repos = os.listdir(config_opts['repo_dir']).sort()
+
+        print
+        for r in repos:
+            print 'Repo: %s' % r
+            print
+
 elif mode == 'user':
 
     d = Database(config_opts['database'])
