@@ -17,6 +17,7 @@ from GitServer import Repository
 from GitServer import Database
 
 
+#
 # logging helper class
 class Log:
     def __init__(self):
@@ -38,6 +39,7 @@ class Log:
         logging.critical(self.format(msg))
 
 
+#
 # allowed Git commands
 allowed_git_commands = {
     'git-upload-pack' : Permission.read,
@@ -46,10 +48,12 @@ allowed_git_commands = {
 }
 
 
+#
 # load the config
 config_opts = Config.get()
 
 
+#
 # setup logging
 logging.basicConfig(filename=config_opts['log_file'], format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %H:%M:%S")
 
@@ -58,6 +62,7 @@ log = Log()
 log.info('session start')
 
 
+#
 # parse command line arguments
 parser = argparse.ArgumentParser(description='Process a git command as accessed via an SSH connection.')
 parser.add_argument('-u', '--username', required=True, help='Name of the gitserver user account.')
@@ -68,6 +73,7 @@ username = args.username
 log.info('username: %s' % username)
 
 
+#
 # parse the original command
 original_command = os.environ.get('SSH_ORIGINAL_COMMAND')
 
@@ -98,6 +104,7 @@ if not command in allowed_git_commands:
 log.info('parsed command: %s' % command)
 
 
+#
 # check on the repository
 r = Repository(name = reponame, directory = config_opts['repo_dir'])
 
@@ -114,10 +121,12 @@ if not r.exists():
 log.info('parsed (and sanitized) repository: %s' % r.name)
 
 
+#
 # setup the database connection
 d = Database(config_opts['database'])
 
 
+#
 # check the repo permissions and execute the requested command if allowed
 perm_requested = allowed_git_commands[command]
 log.info('permission requested: %s (%d)' % (Permission.name[perm_requested], perm_requested))
@@ -127,7 +136,7 @@ if perm:
     perm_allowed = int(perm[0][2])
 else:
     perm_allowed = 0
-# perm_allowed = d.get_permission(r.name, username)
+
 log.info('permission allowed: %s (%d)' % (Permission.name[perm_allowed], perm_allowed))
 
 if perm_requested <= perm_allowed:
