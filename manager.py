@@ -216,7 +216,7 @@ if mode == 'repo':
         print
         for r in repos:
             print 'Repo: %s' % r
-            perms = d.get_permissions(reponame = r)
+            perms = d.get_permission(reponame = r)
             if not perms:
                 print 'Perm: none'
             else:
@@ -269,7 +269,7 @@ elif mode == 'user':
 
         for user in users:
             print 'User: %s' % (user[0])
-            perms = d.get_permissions(username = user[0])
+            perms = d.get_permission(username = user[0])
             if not perms:
                 print 'Perm: none'
             else:

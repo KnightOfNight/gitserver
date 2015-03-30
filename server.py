@@ -131,7 +131,7 @@ d = Database(config_opts['database'])
 perm_requested = allowed_git_commands[command]
 log.info('permission requested: %s (%d)' % (Permission.name[perm_requested], perm_requested))
 
-perm = d.get_permissions(r.name, username)
+perm = d.get_permission(r.name, username)
 if perm:
     perm_allowed = int(perm[0][2])
 else:

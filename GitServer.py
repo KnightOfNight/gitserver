@@ -180,21 +180,7 @@ class Database:
 
         return(True)
 
-    def get_permission(self, reponame, username):
-        c = self.conn
-
-        cur = c.execute('SELECT permission FROM permissions WHERE user_name=? AND repository_name=?', (username, reponame))
-
-        permission = cur.fetchone()
-
-        if permission == None:
-            permission = 0
-        else:
-            permission = int(permission[0])
-
-        return(permission)
-
-    def get_permissions(self, reponame = None, username = None):
+    def get_permission(self, reponame = None, username = None):
         c = self.conn
 
         if reponame == None and username == None:
@@ -220,7 +206,7 @@ class Database:
 
         t = int(time.time())
 
-        if self.get_permissions(reponame, username):
+        if self.get_permission(reponame, username):
             # update
             with c:
                 c.execute('UPDATE permissions SET permission=?,updated_at=? WHERE repository_name=? AND user_name=?', (permission, t, reponame, username))
@@ -235,7 +221,7 @@ class Database:
     def delete_permission(self, reponame, username):
         c = self.conn
 
-        if not self.get_permissions(reponame, username):
+        if not self.get_permission(reponame, username):
             logging.critical('user "%s" does not have any permissions for repository "%s"' % (username, reponame))
             return(False)
 
