@@ -167,7 +167,9 @@ if mode == 'repo':
 
     elif cmd == 'list':
         
-        repos = os.listdir(config_opts['repo_dir']).sort()
+        repos = os.listdir(config_opts['repo_dir'])
+
+        repos.sort()
 
         print
         for r in repos:
