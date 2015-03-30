@@ -18,6 +18,30 @@ def fatal_error(msg):
     sys.exit(-1)
 
 
+def runcmd(cmd):
+    stdout = tempfile.mkstemp(dir = "/tmp")
+    stdout_fd = stdout[0]
+    stdout_file = stdout[1]
+
+    cmd_ret = subprocess.call(cmd, stdout = stdout_fd, stderr = subprocess.STDOUT, shell = True)
+
+    os.close(stdout_fd)
+
+    if cmd_ret == 0:
+        ret = True
+
+    else:
+        logging.critical('cmd "%s" failed' % (cmd))
+        with open(stdout_file) as f:
+            print f.readline()
+
+        ret = False
+
+    os.unlink(stdout_file)
+
+    return(ret)
+
+
 class Config:
     @staticmethod
     def get():
@@ -82,6 +106,7 @@ class Repository:
         else:
             return False
 
+
     def create(self):
         if self.exists():
             logging.critical('repository "%s" already exists' % (self.name))
@@ -90,30 +115,17 @@ class Repository:
         if not os.path.isdir(self.path):
             os.mkdir(self.path)
 
-        stdout = tempfile.mkstemp(dir = "/tmp")
-        stdout_fd = stdout[0]
-        stdout_file = stdout[1]
-
         cmd = 'git init --bare %s' % self.path
 
-        cmd_ret = subprocess.call(cmd, stdout = stdout_fd, stderr = subprocess.STDOUT, shell = True)
+        if not runcmd(cmd):
+            return(False)
 
-        os.close(stdout_fd)
+        cmd = 'git config --file %s receive.denyNonFastForwards true' % (self.path + '/config')
 
-        if cmd_ret == 0:
-            ret = True
+        if not runcmd(cmd):
+            return(False)
 
-        else:
-            logging.critical('unable to initialize git repository')
-
-            with open(stdout_file) as f:
-                print f.readline()
-
-            ret = False
-            
-        os.unlink(stdout_file)
-            
-        return(ret)
+        return(True)
 
     def delete(self):
         if not self.exists():
