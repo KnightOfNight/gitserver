@@ -145,20 +145,25 @@ class Database:
     def create_user(self, username, userkey):
         c = self.conn
 
-        if self.get_user(username):
-            logging.critical('user "%s" already exists')
-            return(False)
-
         t = int(time.time())
 
-        try:
-            with c:
-                c.execute('INSERT INTO users VALUES(?, ?, ?, ?)', (username, userkey, t, t))
-                return(True)
+        if self.get_user(username):
+            try:
+                with c:
+                    c.execute('UPDATE USERS set key=?,updated_at=?', (userkey, t))
+                    return(True)
+            except sqlite3.IntegrityError:
+                logging.critical('SSH key already exists')
+                return(False)
 
-        except sqlite3.IntegrityError:
-            logging.critical('user or key already exists')
-            return(False)
+        else:
+            try:
+                with c:
+                    c.execute('INSERT INTO users VALUES(?, ?, ?, ?)', (username, userkey, t, t))
+                    return(True)
+            except sqlite3.IntegrityError:
+                logging.critical('user name or SSH key already exists')
+                return(False)
 
     def delete_user(self, username):
         c = self.conn

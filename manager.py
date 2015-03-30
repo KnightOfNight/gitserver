@@ -242,6 +242,13 @@ elif mode == 'user':
 
         userkey = input_get_ssh_key()
 
+        logging.info('updating user "%s"' % (username))
+
+        if not d.create_user(username, userkey):
+            sys.exit(-1)
+
+        generate_authorized_keys(config_opts)
+
     elif cmd == 'delete':
         username = args.name
 
