@@ -215,7 +215,7 @@ class Database:
 
         t = int(time.time())
 
-        if self.get_permission(reponame, username):
+        if self.get_permissions(reponame, username):
             # update
             with c:
                 c.execute('UPDATE permissions SET permission=?,updated_at=? WHERE repository_name=? AND user_name=?', (permission, t, reponame, username))
@@ -230,7 +230,7 @@ class Database:
     def delete_permission(self, reponame, username):
         c = self.conn
 
-        if not self.get_permission(reponame, username):
+        if not self.get_permissions(reponame, username):
             logging.critical('user "%s" does not have any permissions for repository "%s"' % (username, reponame))
             return(False)
 
