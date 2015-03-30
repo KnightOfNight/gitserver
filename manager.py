@@ -179,7 +179,7 @@ if mode == 'repo':
                 print 'Perm: none'
 
             else:
-                print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (p[1], Permission.name[int(p[2])]), p ) )
+                print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (p[1], Permission.name[int(p[2])]), perms ) )
             print
 
 elif mode == 'user':
@@ -234,7 +234,7 @@ elif mode == 'user':
                 print 'Perm: none'
 
             else:
-                print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (Permission.name[int(p[2])], p[0]), p ) )
+                print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (Permission.name[int(p[2])], p[0]), perms ) )
             print
 
 elif mode == 'perm':
