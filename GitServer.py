@@ -150,7 +150,7 @@ class Database:
         if self.get_user(username):
             try:
                 with c:
-                    c.execute('UPDATE USERS set key=?,updated_at=?', (userkey, t))
+                    c.execute('UPDATE USERS set key=?,updated_at=? WHERE name=?', (userkey, t, username))
                     return(True)
             except sqlite3.IntegrityError:
                 logging.critical('SSH key already exists')
