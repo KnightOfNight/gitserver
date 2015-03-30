@@ -205,7 +205,7 @@ if mode == 'repo':
 
         logging.info('deleting all permissions on repository "%s"' % (reponame))
 
-        d.delete_all_permissions(reponame)    
+        d.delete_permission(reponame)    
 
     elif cmd == 'list':
         

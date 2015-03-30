@@ -218,25 +218,16 @@ class Database:
 
         return(True)
 
-    def delete_permission(self, reponame, username):
+    def delete_permission(self, reponame, username = None):
         c = self.conn
 
-        if not self.get_permission(reponame, username):
-            logging.critical('user "%s" does not have any permissions for repository "%s"' % (username, reponame))
-            return(False)
+        if username == None:
+            with c:
+                c.execute('DELETE FROM permissions WHERE repository_name=?', (reponame,))
 
-        with c:
-            c.execute('DELETE FROM permissions WHERE repository_name=? AND user_name=?', (reponame, username))
-
-        logging.debug(str(c.total_changes) + ' rows deleted')
-
-        return(True)
-
-    def delete_all_permissions(self, reponame):
-        c = self.conn
-
-        with c:
-            c.execute('DELETE FROM permissions WHERE repository_name=?', (reponame,))
+        else:
+            with c:
+                c.execute('DELETE FROM permissions WHERE repository_name=? AND user_name=?', (reponame, username))
 
         logging.debug(str(c.total_changes) + ' rows deleted')
 
