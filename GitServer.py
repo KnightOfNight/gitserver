@@ -12,14 +12,18 @@ import tempfile
 import time
 
 
+#
+# die with a fatal error
 def fatal_error(msg):
-    tag = "gitserver fatal error: "
-    sys.stderr.write(tag + msg + "\n")
+    tag = 'gitserver fatal error: '
+    sys.stderr.write(tag + msg + '\n')
     sys.exit(-1)
 
 
+#
+# run a command
 def runcmd(cmd):
-    stdout = tempfile.mkstemp(dir = "/tmp")
+    stdout = tempfile.mkstemp(dir = '/tmp')
     stdout_fd = stdout[0]
     stdout_file = stdout[1]
 
@@ -77,14 +81,14 @@ class Config:
 class Permission:
     read = 1
     write = 2
-    name = [ "none", "read", "write" ]
+    name = [ 'none', 'read', 'write' ]
 
 
 class Repository:
-    def __init__(self, name, directory = ""):
+    def __init__(self, name, directory = ''):
         self.name = re.sub('[^a-zA-Z0-9]', '', name)
         self.directory = directory
-        self.path = self.directory + "/" + self.name
+        self.path = self.directory + '/' + self.name
 
     def exists(self):
         if not self.name:
@@ -93,14 +97,14 @@ class Repository:
         elif not os.path.isdir(self.path):
             return False
 
-        elif os.path.isfile(self.path + "/config") and \
-                os.path.isfile(self.path + "/description") and \
-                os.path.isfile(self.path + "/HEAD") and \
-                os.path.isdir(self.path + "/branches") and \
-                os.path.isdir(self.path + "/hooks") and \
-                os.path.isdir(self.path + "/info") and \
-                os.path.isdir(self.path + "/objects") and \
-                os.path.isdir(self.path + "/refs"):
+        elif os.path.isfile(self.path + '/config') and \
+                os.path.isfile(self.path + '/description') and \
+                os.path.isfile(self.path + '/HEAD') and \
+                os.path.isdir(self.path + '/branches') and \
+                os.path.isdir(self.path + '/hooks') and \
+                os.path.isdir(self.path + '/info') and \
+                os.path.isdir(self.path + '/objects') and \
+                os.path.isdir(self.path + '/refs'):
             return True
 
         else:
