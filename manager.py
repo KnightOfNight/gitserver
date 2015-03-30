@@ -230,20 +230,7 @@ elif mode == 'user':
     if cmd == 'create':
         username = args.name
 
-        userkey = raw_input('Copy and paste the SSH key user "%s": ' % username)
-        userkey = userkey.strip()
-        print
-
-        k = userkey.split(' ')
-
-        if len(k) < 2 or len(k) > 3:
-            logging.critical('SSH key is invalid, expecting key in the format "<tag> <key> [<comment>]"')
-            sys.exit(-1)
-
-        if len(k) == 3:
-            k.pop()
-
-        userkey = ' '.join(k)
+        userkey = input_get_ssh_key()
 
         logging.info('creating user "%s"' % (username))
 
@@ -252,6 +239,8 @@ elif mode == 'user':
 
     elif cmd == 'update':
         username = args.name
+
+        userkey = input_get_ssh_key()
 
     elif cmd == 'delete':
         username = args.name
