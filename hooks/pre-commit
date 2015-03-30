@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "Compiling scripts..."
+
+if python -m py_compile *.py; then
+    echo "SUCCESS"
+    exit 0
+else
+    echo "FAIL"
+    exit -1
+fi
