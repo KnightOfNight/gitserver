@@ -12,6 +12,8 @@ from GitServer import Database
 from GitServer import Repository
 
 
+#
+# generate the SSH authorized keys file
 def generate_authorized_keys(config_opts):
     dir = os.path.expanduser('~/.ssh')
     file = os.path.expanduser(dir + '/authorized_keys')
@@ -32,6 +34,8 @@ def generate_authorized_keys(config_opts):
     os.chmod(file, 0600)
 
 
+#
+# prompt the user to confirm deletion of something
 def confirm_deletion(description, value):
     yesno = raw_input('Are you sure you want to delete the %s "%s" [yes/NO]? ' % (description, value))
     print
@@ -50,14 +54,17 @@ def confirm_deletion(description, value):
     return(True)
 
 
+#
 # load the config
 config_opts = Config.get()
 
 
+#
 # setup logging
 logging.basicConfig(format = '%(levelname)s: %(message)s', level = logging.DEBUG)
 
 
+#
 # parse command line arguments
 parser = argparse.ArgumentParser(description = 'Manage repositories, uers, and permissions.')
 
@@ -122,15 +129,12 @@ p.set_defaults(cmd = cmd)
 p.add_argument('user')
 p.add_argument('repo')
 
-cmd = 'list'
-p = sp.add_parser(cmd)
-p.set_defaults(cmd = cmd)
-
-# do the actual parse args
+#
 args = parser.parse_args()
 
 
-# do something
+#
+#
 mode = args.mode
 cmd = args.cmd
 
@@ -177,7 +181,6 @@ if mode == 'repo':
             perms = d.get_permissions(reponame = r)
             if not perms:
                 print 'Perm: none'
-
             else:
                 print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (p[1], Permission.name[int(p[2])]), perms ) )
             print
@@ -232,7 +235,6 @@ elif mode == 'user':
             perms = d.get_permissions(username = user[0])
             if not perms:
                 print 'Perm: none'
-
             else:
                 print 'Perm: ' + ', '.join( map( lambda p: "%s %s" % (Permission.name[int(p[2])], p[0]), perms ) )
             print
