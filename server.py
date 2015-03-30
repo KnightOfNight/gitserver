@@ -124,7 +124,7 @@ log.info('permission requested: %s (%d)' % (Permission.name[perm_requested], per
 
 perm = d.get_permissions(r.name, username)
 if perm:
-    perm_allowed = int(perm[2])
+    perm_allowed = int(perm[0][2])
 else:
     perm_allowed = 0
 # perm_allowed = d.get_permission(r.name, username)
