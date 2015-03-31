@@ -1,4 +1,5 @@
 [default]
-log_file: /var/log/gitserver.log
-repo_dir: /src
-database: /var/lib/gitserver/database
+repo_dir: /home/git/repo
+log_file: /home/git/log/gitserver.log
+database: /home/git/lib/gitserver.db
+server_script: /home/git/bin/server
