@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export GIT_SSH="$HOME/bin/gitssh"
+
+echo "post-update: pushing mirror to bitbucket..."
+
+if git push --mirror bitbucket; then
+    echo "post-update: success"
+else
+    echo "post-update: FAILED"
+fi
+
